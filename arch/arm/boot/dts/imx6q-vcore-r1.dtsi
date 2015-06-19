@@ -15,10 +15,8 @@
 
 / {
 	aliases {
-                mxcfb0 = &hdmi_display;
-                mxcfb2 = &lcd_display;
-		hdmi_display = &hdmi_display;
-		lcd_display = &lcd_display;
+              mxcfb0 = &hdmi_display;
+		          hdmi_display = &hdmi_display;
 	};
 
 	memory {
@@ -130,16 +128,6 @@
 		hdmi-controller = <&hdmi_audio>;
 	};
 
-	lcd_display: fb@1 {
-		compatible = "fsl,mxc_sdc_fb";
-		disp_dev = "lcd";
-		interface_pix_fmt = "RGB666";
-		default_bpp = <16>;
-		int_clk = <0>;
-		late_init = <0>;
-		status = "disabled";
-	};
-
 	hdmi_display: fb@2 {
 		compatible = "fsl,mxc_sdc_fb";
 		disp_dev = "hdmi";
@@ -149,16 +137,6 @@
 		int_clk = <0>;
 		late_init = <0>;
 		status = "disabled";
-	};
-
-	lcd0: lcd@0 {
-		compatible = "fsl,lcd";
-		ipu_id = <0>;
-		disp_id = <0>;
-		default_ifmt = "RGB666";
-		pinctrl-names = "default";
-		pinctrl-0 = <&pinctrl_ipu1_4>;
-		status = "okay";
 	};
 
 	backlight_lcd: backlight_lcd {
