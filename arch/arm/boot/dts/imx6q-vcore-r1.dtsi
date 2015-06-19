@@ -16,14 +16,9 @@
 / {
 	aliases {
                 mxcfb0 = &hdmi_display;
-                mxcfb1 = &lvds_display;
                 mxcfb2 = &lcd_display;
 		hdmi_display = &hdmi_display;
-		lvds_display = &lvds_display;
 		lcd_display = &lcd_display;
-		hannstar = &hannstar ;
-		lg1280x800 = &lg1280x800;
-		okaya1024x600 = &okaya1024x600;
 	};
 
 	memory {
@@ -133,16 +128,6 @@
 			     "fsl,imx-audio-hdmi";
 		model = "imx-audio-hdmi";
 		hdmi-controller = <&hdmi_audio>;
-	};
-
-	lvds_display: fb@0 {
-		compatible = "fsl,mxc_sdc_fb";
-		disp_dev = "ldb";
-		interface_pix_fmt = "RGB666";
-		default_bpp = <16>;
-		int_clk = <0>;
-		late_init = <0>;
-		status = "disabled";
 	};
 
 	lcd_display: fb@1 {
@@ -530,54 +515,6 @@
 				MX6QDL_PAD_SD3_DAT7__UART1_TX_DATA 0x1b0b1
 				MX6QDL_PAD_SD3_DAT6__UART1_RX_DATA 0x1b0b1
 			>;
-		};
-	};
-};
-
-&ldb {
-	status = "okay";
-
-	lvds-channel@0 {
-		crtc = "ipu1-di1";
-		fsl,data-mapping = "spwg";
-		fsl,data-width = <18>;
-		status = "okay";
-		primary;
-
-		display-timings {
-			lg1280x800: lp101wx1 {
-				clock-frequency = <72000000>;
-				hactive = <1280>;
-				vactive = <800>;
-				hback-porch = <48>;
-				hfront-porch = <80>;
-				vback-porch = <15>;
-				vfront-porch = <2>;
-				hsync-len = <32>;
-				vsync-len = <6>;
-			};
-			okaya1024x600: okaya7x0WP {
-				clock-frequency = <52000000>;
-				hactive = <1024>;
-				vactive = <600>;
-				hback-porch = <220>;
-				hfront-porch = <40>;
-				vback-porch = <7>;
-				vfront-porch = <21>;
-				hsync-len = <60>;
-				vsync-len = <10>;
-			};
-			hannstar: hsd100pxn1 {
-				clock-frequency = <65000000>;
-				hactive = <1024>;
-				vactive = <768>;
-				hback-porch = <220>;
-				hfront-porch = <40>;
-				vback-porch = <21>;
-				vfront-porch = <7>;
-				hsync-len = <60>;
-				vsync-len = <10>;
-			};
 		};
 	};
 };
