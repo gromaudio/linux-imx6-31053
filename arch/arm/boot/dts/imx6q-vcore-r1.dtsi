@@ -139,20 +139,6 @@
 		status = "disabled";
 	};
 
-	backlight_lcd: backlight_lcd {
-		compatible = "pwm-backlight";
-		pwms = <&pwm1 0 5000000>;
-		brightness-levels = <0 4 8 16 32 64 128 255>;
-		default-brightness-level = <7>;
-	};
-
-	backlight_lvds {
-		compatible = "pwm-backlight";
-		pwms = <&pwm4 0 5000000>;
-		brightness-levels = <0 4 8 16 32 64 128 255>;
-		default-brightness-level = <7>;
-	};
-
 	v4l2_cap_0 {
 		compatible = "fsl,imx6q-v4l2-capture";
 		ipu_id = <0>;
@@ -471,6 +457,14 @@
 		};
 	};
 
+  pwm2 {
+    pinctrl_pwm2_2: pwm2grp-2 {
+      fsl,pins = <
+        MX6QDL_PAD_SD1_DAT2__PWM2_OUT 0x1b0b1
+      >;
+    };
+  };
+
 	pwm3 {
 		pinctrl_pwm3_2: pwm3grp-2 {
 			fsl,pins = <
@@ -510,6 +504,12 @@
 	pinctrl-names = "default";
 	pinctrl-0 = <&pinctrl_pwm1_1>;
 	status = "okay";
+};
+
+&pwm2 {
+  pinctrl-names = "default";
+  pinctrl-0 = <&pinctrl_pwm2_2>;
+  status = "okay";
 };
 
 &pwm3 {
