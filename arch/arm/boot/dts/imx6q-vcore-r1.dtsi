@@ -179,16 +179,14 @@
   imx6q-sabrelite {
     pinctrl_hog_1: hoggrp-1 {
       fsl,pins = <
-        MX6QDL_PAD_EIM_D19__GPIO3_IO19    0x80000000  /* spi-nor CS */
+        MX6QDL_PAD_EIM_D19__GPIO3_IO19    0x80000000  /* ECSPI_1 CS */
+        MX6QDL_PAD_EIM_RW__GPIO2_IO26     0x80000000  /* ECSPI_2 CS */
         MX6QDL_PAD_EIM_D22__GPIO3_IO22    0x80000000  /* otg power en */
         MX6QDL_PAD_SD3_DAT5__GPIO7_IO00   0x80000000  /* USDHC3 CD */
         MX6QDL_PAD_SD3_DAT4__GPIO7_IO01   0x1f0b0     /* USDHC3 WP */
         MX6QDL_PAD_NANDF_D6__GPIO2_IO06   0x80000000  /* uSDHC4 CD */
-        MX6QDL_PAD_NANDF_D7__GPIO2_IO07   0x80000000  /* Spare */
-        MX6QDL_PAD_GPIO_0__CCM_CLKO1      0x000b0     /* SGTL5000 sys_mclk */
-        MX6QDL_PAD_GPIO_2__GPIO1_IO02     0x80000000  /* CAN standby */
-        MX6QDL_PAD_GPIO_4__GPIO1_IO04     0x80000000  /* CAN enable */
-        MX6QDL_PAD_GPIO_9__GPIO1_IO09     0x80000000  /* I2C3 touch screen interrupt */
+        MX6QDL_PAD_NANDF_D7__GPIO2_IO07   0x1f0b0     /* uSDHC4 WP */
+        MX6QDL_PAD_GPIO_0__CCM_CLKO1      0x000b0     /* Audio codec sys_mclk */
         MX6QDL_PAD_GPIO_17__GPIO7_IO12    0x0b0b0     /* USB Hub Reset */
       >;
     };
@@ -368,17 +366,16 @@
 
 &usdhc3 {
   pinctrl-names = "default";
-  pinctrl-0 = <&pinctrl_usdhc3_2>;
-  cd-gpios = <&gpio7 0 0>;
-  wp-gpios = <&gpio7 1 0>;
-  vmmc-supply = <&reg_3p3v>;
-  status = "okay";
+  pinctrl-0     = <&pinctrl_usdhc3_2>;
+  cd-gpios      = <&gpio7 0 0>;
+  vmmc-supply   = <&reg_3p3v>;
+  status        = "okay";
 };
 
 &usdhc4 {
   pinctrl-names = "default";
-  pinctrl-0 = <&pinctrl_usdhc4_2>;
-  cd-gpios = <&gpio2 6 0>;
-  vmmc-supply = <&reg_3p3v>;
-  status = "okay";
+  pinctrl-0     = <&pinctrl_usdhc4_2>;
+  cd-gpios      = <&gpio2 6 0>;
+  vmmc-supply   = <&reg_3p3v>;
+  status        = "okay";
 };
