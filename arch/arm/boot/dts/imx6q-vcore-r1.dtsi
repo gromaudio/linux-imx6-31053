@@ -15,8 +15,8 @@
 
 / {
   aliases {
-              mxcfb0 = &hdmi_display;
-              hdmi_display = &hdmi_display;
+    mxcfb0       = &hdmi_display;
+    hdmi_display = &hdmi_display;
   };
 
   memory {
@@ -25,8 +25,8 @@
 
   clocks {
     clk24m: clk24m {
-      compatible = "fixed-clock";
-      #clock-cells = <0>;
+      compatible      = "fixed-clock";
+      #clock-cells    = <0>;
       clock-frequency = <24000000>;
     };
   };
@@ -35,35 +35,35 @@
     compatible = "simple-bus";
 
     reg_1p8v: 1p8v {
-      compatible = "regulator-fixed";
-      regulator-name = "1P8V";
+      compatible              = "regulator-fixed";
+      regulator-name          = "1P8V";
       regulator-min-microvolt = <1800000>;
       regulator-max-microvolt = <1800000>;
       regulator-always-on;
     };
 
     reg_2p5v: 2p5v {
-      compatible = "regulator-fixed";
-      regulator-name = "2P5V";
+      compatible              = "regulator-fixed";
+      regulator-name          = "2P5V";
       regulator-min-microvolt = <2500000>;
       regulator-max-microvolt = <2500000>;
       regulator-always-on;
     };
 
     reg_3p3v: 3p3v {
-      compatible = "regulator-fixed";
-      regulator-name = "3P3V";
+      compatible              = "regulator-fixed";
+      regulator-name          = "3P3V";
       regulator-min-microvolt = <3300000>;
       regulator-max-microvolt = <3300000>;
       regulator-always-on;
     };
 
     reg_usb_otg_vbus: usb_otg_vbus {
-      compatible = "regulator-fixed";
-      regulator-name = "usb_otg_vbus";
+      compatible              = "regulator-fixed";
+      regulator-name          = "usb_otg_vbus";
       regulator-min-microvolt = <5000000>;
       regulator-max-microvolt = <5000000>;
-      gpio = <&gpio3 22 0>;
+      gpio                    = <&gpio3 22 0>;
       enable-active-high;
     };
   };
@@ -101,23 +101,23 @@
   status                  = "okay";
 
   flash: m25p80@0 {
-    compatible = "sst,sst25vf016b";
+    compatible        = "sst,sst25vf016b";
     spi-max-frequency = <20000000>;
-    reg = <0>;
-    #address-cells = <1>;
-    #size-cells = <1>;
+    reg               = <0>;
+    #address-cells    = <1>;
+    #size-cells       = <1>;
     mtd0@00000000 {
       label = "U-Boot";
-      reg = <0x0 0xC0000>;
+      reg   = <0x0 0xC0000>;
     };
 
     mtd@000C0000 {
       label = "env";
-      reg = <0xC0000 0x2000>;
+      reg   = <0xC0000 0x2000>;
     };
     mtd@000C2000 {
       label = "splash";
-      reg = <0xC2000 0x13e000>;
+      reg   = <0xC2000 0x13e000>;
     };
   };
 };
@@ -135,46 +135,46 @@
 };
 
 &hdmi_core {
-  ipu_id = <1>;
+  ipu_id  = <1>;
   disp_id = <0>;
-  status = "okay";
+  status  = "okay";
 };
 
 &hdmi_video {
-  fsl,phy_reg_vlev = <0x0294>;
+  fsl,phy_reg_vlev    = <0x0294>;
   fsl,phy_reg_cksymtx = <0x800d>;
-  status = "okay";
+  status              = "okay";
 };
 
 &i2c1 {
   clock-frequency = <100000>;
-  pinctrl-names = "default";
-  pinctrl-0 = <&pinctrl_i2c1_2>;
-  status = "okay";
+  pinctrl-names   = "default";
+  pinctrl-0       = <&pinctrl_i2c1_2>;
+  status          = "okay";
 };
 
 &i2c2 {
   clock-frequency = <100000>;
-  pinctrl-names = "default";
-  pinctrl-0 = <&pinctrl_i2c2_2>;
-  status = "okay";
+  pinctrl-names   = "default";
+  pinctrl-0       = <&pinctrl_i2c2_2>;
+  status          = "okay";
 
   hdmi: edid@50 {
     compatible = "fsl,imx6-hdmi-i2c";
-    reg = <0x50>;
+    reg        = <0x50>;
   };
 };
 
 &i2c3 {
   clock-frequency = <100000>;
-  pinctrl-names = "default";
-  pinctrl-0 = <&pinctrl_i2c3_3>;
-  status = "okay";
+  pinctrl-names   = "default";
+  pinctrl-0       = <&pinctrl_i2c3_3>;
+  status          = "okay";
 };
 
 &iomuxc {
   pinctrl-names = "default";
-  pinctrl-0 = <&pinctrl_hog_1>;
+  pinctrl-0     = <&pinctrl_hog_1>;
 
   imx6q-sabrelite {
     pinctrl_hog_1: hoggrp-1 {
@@ -295,61 +295,61 @@
 
 &pwm1 {
   pinctrl-names = "default";
-  pinctrl-0 = <&pinctrl_pwm1_1>;
-  status = "okay";
+  pinctrl-0     = <&pinctrl_pwm1_1>;
+  status        = "okay";
 };
 
 &pwm2 {
   pinctrl-names = "default";
-  pinctrl-0 = <&pinctrl_pwm2_2>;
-  status = "okay";
+  pinctrl-0     = <&pinctrl_pwm2_2>;
+  status        = "okay";
 };
 
 &pwm3 {
   pinctrl-names = "default";
-  pinctrl-0 = <&pinctrl_pwm3_2>;
-  status = "okay";
+  pinctrl-0     = <&pinctrl_pwm3_2>;
+  status        = "okay";
 };
 
 &pwm4 {
   pinctrl-names = "default";
-  pinctrl-0 = <&pinctrl_pwm4_2>;
-  status = "okay";
+  pinctrl-0     = <&pinctrl_pwm4_2>;
+  status        = "okay";
 };
 
 &ssi1 {
   fsl,mode = "i2s-slave";
-  status = "okay";
+  status   = "okay";
 };
 
 &uart1 {
   pinctrl-names = "default";
-  pinctrl-0 = <&pinctrl_uart1_2>;
-  status = "okay";
+  pinctrl-0     = <&pinctrl_uart1_2>;
+  status        = "okay";
 };
 
 &uart2 {
   pinctrl-names = "default";
-  pinctrl-0 = <&pinctrl_uart2_3>;
-  status = "okay";
+  pinctrl-0     = <&pinctrl_uart2_3>;
+  status        = "okay";
 };
 
 &uart3 {
   pinctrl-names = "default";
-  pinctrl-0 = <&pinctrl_uart3_1>;
-  status = "okay";
+  pinctrl-0     = <&pinctrl_uart3_1>;
+  status        = "okay";
 };
 
 &uart4 {
   pinctrl-names = "default";
-  pinctrl-0 = <&pinctrl_uart4_1>;
-  status = "okay";
+  pinctrl-0     = <&pinctrl_uart4_1>;
+  status        = "okay";
 };
 
 &uart5 {
   pinctrl-names = "default";
-  pinctrl-0 = <&pinctrl_uart5_2>;
-  status = "okay";
+  pinctrl-0     = <&pinctrl_uart5_2>;
+  status        = "okay";
 };
 
 &usbh1 {
@@ -357,11 +357,11 @@
 };
 
 &usbotg {
-  vbus-supply = <&reg_usb_otg_vbus>;
+  vbus-supply   = <&reg_usb_otg_vbus>;
   pinctrl-names = "default";
-  pinctrl-0 = <&pinctrl_usbotg_1>;
+  pinctrl-0     = <&pinctrl_usbotg_1>;
+  status        = "okay";
   disable-over-current;
-  status = "okay";
 };
 
 &usdhc3 {
