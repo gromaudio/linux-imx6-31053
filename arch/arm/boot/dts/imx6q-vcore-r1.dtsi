@@ -253,6 +253,24 @@
       >;
     };
   };
+
+  uart2 {
+    pinctrl_uart2_3: uart2grp-3 {
+      fsl,pins = <
+        MX6QDL_PAD_GPIO_7__UART2_TX_DATA 0x1b0b1
+        MX6QDL_PAD_GPIO_8__UART2_RX_DATA 0x1b0b1
+      >;
+    };
+  };
+
+  uart5 {
+    pinctrl_uart5_2: uart5grp-2 {
+      fsl,pins = <
+        MX6QDL_PAD_KEY_ROW1__UART5_TX_DATA 0x1b0b1
+        MX6QDL_PAD_KEY_COL1__UART5_RX_DATA 0x1b0b1
+      >;
+    };
+  };
 };
 
 &pcie {
@@ -296,7 +314,25 @@
 
 &uart2 {
   pinctrl-names = "default";
-  pinctrl-0 = <&pinctrl_uart2_1>;
+  pinctrl-0 = <&pinctrl_uart2_3>;
+  status = "okay";
+};
+
+&uart3 {
+  pinctrl-names = "default";
+  pinctrl-0 = <&pinctrl_uart3_1>;
+  status = "okay";
+};
+
+&uart4 {
+  pinctrl-names = "default";
+  pinctrl-0 = <&pinctrl_uart4_1>;
+  status = "okay";
+};
+
+&uart5 {
+  pinctrl-names = "default";
+  pinctrl-0 = <&pinctrl_uart5_2>;
   status = "okay";
 };
 
