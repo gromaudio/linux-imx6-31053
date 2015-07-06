@@ -11,19 +11,6 @@
 		reg = <0x80000000 0x40000000>;
 	};
 
-	battery: max8903@0 {
-		compatible = "fsl,max8903-charger";
-		pinctrl-names = "default";
-		dok_input = <&gpio4 13 1>;
-		uok_input = <&gpio4 13 1>;
-		chg_input = <&gpio4 15 1>;
-		flt_input = <&gpio4 14 1>;
-		fsl,dcm_always_high;
-		fsl,dc_valid;
-		fsl,adc_disable;
-		status = "okay";
-	};
-
 	regulators {
 		compatible = "simple-bus";
 
@@ -32,22 +19,6 @@
 			regulator-name = "lcd-3v3";
 			gpio = <&gpio4 3 0>;
 			enable-active-high;
-		};
-
-		reg_aud3v: wm8962_supply_3v15 {
-			compatible = "regulator-fixed";
-			regulator-name = "wm8962-supply-3v15";
-			regulator-min-microvolt = <3150000>;
-			regulator-max-microvolt = <3150000>;
-			regulator-boot-on;
-		};
-
-		reg_aud4v: wm8962_supply_4v2 {
-			compatible = "regulator-fixed";
-			regulator-name = "wm8962-supply-4v2";
-			regulator-min-microvolt = <4325000>;
-			regulator-max-microvolt = <4325000>;
-			regulator-boot-on;
 		};
 
 		reg_usb_otg1_vbus: usb_otg1_vbus {
@@ -185,23 +156,6 @@
 			>;
 		};
 	};
-};
-
-&kpp {
-	pinctrl-names = "default", "sleep";
-	pinctrl-0 = <&pinctrl_kpp_1>;
-	pinctrl-1 = <&pinctrl_kpp_1_sleep>;
-	linux,keymap = <
-            0x00000073      /* KEY_VOLUMEUP */
-            0x00010072      /* KEY_VOLUMEDOWN */
-            0x0002006a      /* KEY_RIGHT */
-            0x01000069      /* KEY_LEFT */
-            0x01010067      /* KEY_UP */
-            0x01020074      /* KEY_POWER */
-            0x0200009e      /* KEY_BACK */
-            0x0201006c      /* KEY_DOWN */
-		>;
-        status = "okay";
 };
 
 &lcdif {
