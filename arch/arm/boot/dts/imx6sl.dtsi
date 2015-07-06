@@ -1046,6 +1046,13 @@
 				MX6SL_PAD_I2C1_SDA__I2C1_SDA 0x4001b8b1
 			>;
 		};
+
+		pinctrl_i2c1_2: i2c1grp-2 {
+			fsl,pins = <
+				MX6SL_PAD_HSIC_DAT__I2C1_SCL 0x4001b8b1
+				MX6SL_PAD_I2C1_SDA__I2C1_SDA 0x4001b8b1
+			>;
+		};
 	};
 
 	i2c2 {
@@ -1053,6 +1060,13 @@
 			fsl,pins = <
 				MX6SL_PAD_I2C2_SCL__I2C2_SCL 0x4001b8b1
 				MX6SL_PAD_I2C2_SDA__I2C2_SDA 0x4001b8b1
+			>;
+		};
+
+		pinctrl_i2c2_2: i2c2grp-2 {
+			fsl,pins = <
+				MX6SL_PAD_KEY_COL0__I2C2_SCL 0x4001b8b1
+				MX6SL_PAD_KEY_ROW0__I2C2_SDA 0x4001b8b1
 			>;
 		};
 	};
