@@ -11,8 +11,8 @@
 #include "imx6sl.dtsi"
 
 / {
-	model = "Gromaudio i.MX6SL VCoreLite Board";
-	compatible = "fsl,imx6sl-evk", "fsl,imx6sl";
+  model      = "Gromaudio i.MX6SL VCoreLite Board";
+  compatible = "fsl,imx6sl-evk", "fsl,imx6sl";
 
   memory {
     reg = <0x80000000 0x40000000>;
@@ -22,68 +22,68 @@
     compatible = "simple-bus";
 
     reg_usb_otg1_vbus: usb_otg1_vbus {
-      compatible = "regulator-fixed";
-      regulator-name = "usb_otg1_vbus";
+      compatible              = "regulator-fixed";
+      regulator-name          = "usb_otg1_vbus";
       regulator-min-microvolt = <5000000>;
       regulator-max-microvolt = <5000000>;
-      gpio = <&gpio4 0 0>;
+      gpio                    = <&gpio4 0 0>;
       enable-active-high;
     };
   };
 
   pwm-backlight {
-    compatible = "pwm-backlight";
-    pwms = <&pwm3 0 5000000>;
-    brightness-levels = <0 4 8 16 32 64 128 255>;
+    compatible               = "pwm-backlight";
+    pwms                     = <&pwm3 0 5000000>;
+    brightness-levels        = <0 4 8 16 32 64 128 255>;
     default-brightness-level = <7>;
   };
 
   ramoops_device {
-    compatible = "fsl,mxc_ramoops";
-    record_size = <524288>; /*512K*/
-    console_size= <262144>; /*256K*/
-    ftrace_size= <262144>;  /*256K*/
-    dump_oops = <1>;
-    status = "okay";
+    compatible   = "fsl,mxc_ramoops";
+    record_size  = <524288>;  /*512K*/
+    console_size = <262144>;  /*256K*/
+    ftrace_size  = <262144>;  /*256K*/
+    dump_oops    = <1>;
+    status       = "okay";
   };
 };
 
 &audmux {
   pinctrl-names = "default";
-  pinctrl-0 = <&pinctrl_audmux_2>;
-  status = "okay";
+  pinctrl-0     = <&pinctrl_audmux_2>;
+  status        = "okay";
 };
 
 &csi1 {
   pinctrl-names = "default";
-  pinctrl-0 = <&pinctrl_csi_1>;
-  status = "disabled";
+  pinctrl-0     = <&pinctrl_csi_1>;
+  status        = "disabled";
 };
 
 &ecspi3 {
   fsl,spi-num-chipselects = <1>;
-  cs-gpios = <&gpio3 12 0>;
-  pinctrl-names = "default";
-  pinctrl-0 = <&pinctrl_ecspi3_1>;
-  status = "okay";
+  cs-gpios                = <&gpio3 12 0>;
+  pinctrl-names           = "default";
+  pinctrl-0               = <&pinctrl_ecspi3_1>;
+  status                  = "okay";
 };
 
 &ecspi4 {
   fsl,spi-num-chipselects = <1>;
-  cs-gpios = <&gpio4 18 0>;
-  pinctrl-names = "default";
-  pinctrl-0 = <&pinctrl_ecspi4_1>;
-  status = "okay";
+  cs-gpios                = <&gpio4 18 0>;
+  pinctrl-names           = "default";
+  pinctrl-0               = <&pinctrl_ecspi4_1>;
+  status                  = "okay";
 };
 
 &gpc {
   fsl,cpu_pupscr_sw2iso = <0xf>;
-  fsl,cpu_pupscr_sw = <0xf>;
+  fsl,cpu_pupscr_sw     = <0xf>;
   fsl,cpu_pdnscr_iso2sw = <0x1>;
-  fsl,cpu_pdnscr_iso = <0x1>;
-  fsl,ldo-bypass = <1>;     /* use ldo-bypass, u-boot will check it and configure */
-  fsl,wdog-reset = <1>;     /* watchdog select of reset source */
-  pu-supply = <&pu_dummy>;  /* ldo-bypass:use pu_dummy if VDDSOC share with VDDPU */
+  fsl,cpu_pdnscr_iso    = <0x1>;
+  fsl,ldo-bypass        = <1>;          /* use ldo-bypass, u-boot will check it and configure */
+  fsl,wdog-reset        = <1>;          /* watchdog select of reset source */
+  pu-supply             = <&pu_dummy>;  /* ldo-bypass:use pu_dummy if VDDSOC share with VDDPU */
 };
 
 &gpu {
@@ -92,29 +92,28 @@
 
 &i2c1 {
   clock-frequency = <100000>;
-  pinctrl-names = "default";
-  pinctrl-0 = <&pinctrl_i2c1_2>;
-  status = "okay";
+  pinctrl-names   = "default";
+  pinctrl-0       = <&pinctrl_i2c1_2>;
+  status          = "okay";
 };
 
 &i2c2 {
-	clock-frequency = <100000>;
-	pinctrl-names = "default";
-	pinctrl-0 = <&pinctrl_i2c2_2>;
-	status = "okay";
+  clock-frequency = <100000>;
+  pinctrl-names   = "default";
+  pinctrl-0       = <&pinctrl_i2c2_2>;
+  status          = "okay";
 };
 
 &i2c3 {
-	clock-frequency = <100000>;
-	pinctrl-names = "default";
-	pinctrl-0 = <&pinctrl_i2c3_1>;
-	status = "okay";
+  clock-frequency = <100000>;
+  pinctrl-names   = "default";
+  pinctrl-0       = <&pinctrl_i2c3_1>;
+  status          = "okay";
 };
 
 &iomuxc {
-	pinctrl-names = "default", "sleep";
-	pinctrl-0 = <&pinctrl_hog>;
-	pinctrl-1 = <&pinctrl_hog_sleep>;
+  pinctrl-names = "default";
+  pinctrl-0     = <&pinctrl_hog>;
 
 	hog {
 		pinctrl_hog: hoggrp {
@@ -126,60 +125,37 @@
         MX6SL_PAD_I2C1_SCL__GPIO3_IO12      0x80000000  /* ECSPI3 CS */
         MX6SL_PAD_FEC_RXD1__GPIO4_IO18      0x80000000  /* ECSPI4 CS */
         MX6SL_PAD_KEY_COL4__GPIO4_IO00      0x80000000  /* USBOTG1 PWR */
-				MX6SL_PAD_REF_CLK_32K__GPIO3_IO22 0x17059
-				MX6SL_PAD_FEC_TX_CLK__GPIO4_IO21  0x80000000
-				MX6SL_PAD_KEY_ROW5__GPIO4_IO03	  0x110b0
-				MX6SL_PAD_EPDC_VCOM0__GPIO2_IO03  0x80000000
-				MX6SL_PAD_EPDC_PWRSTAT__GPIO2_IO13 0x80000000
-				MX6SL_PAD_EPDC_PWRCTRL0__GPIO2_IO07 0x80000000
-				MX6SL_PAD_EPDC_PWRWAKEUP__GPIO2_IO14 0x80000000
-				MX6SL_PAD_EPDC_PWRINT__GPIO2_IO12 0x80000000
-				MX6SL_PAD_EPDC_PWRCTRL3__GPIO2_IO10 0x170b0
-				MX6SL_PAD_EPDC_PWRCTRL2__GPIO2_IO09 0x80000000
-				MX6SL_PAD_KEY_COL6__GPIO4_IO04    0x110b0
-				MX6SL_PAD_ECSPI2_MISO__GPIO4_IO14 0x17000
-				MX6SL_PAD_ECSPI2_MOSI__GPIO4_IO13 0x17000
-				MX6SL_PAD_ECSPI2_SS0__GPIO4_IO15  0x17000
-				MX6SL_PAD_FEC_RX_ER__GPIO4_IO19   0x1b0b0
-				MX6SL_PAD_KEY_COL5__GPIO4_IO02	0x80000000
-			>;
-		};
-
-		pinctrl_hog_sleep: hoggrp_sleep {
-			fsl,pins = <
-				MX6SL_PAD_KEY_ROW5__GPIO4_IO03	  0x3080
-				MX6SL_PAD_KEY_COL6__GPIO4_IO04 	  0x3080
 			>;
 		};
 	};
 };
 
 &lcdif {
-	pinctrl-names = "default";
-	pinctrl-0 = < &pinctrl_lcdif_dat_1
-		            &pinctrl_lcdif_ctrl_1>;
-	display = <&display>;
-	status = "okay";
+	pinctrl-names  = "default";
+	pinctrl-0      = < &pinctrl_lcdif_dat_1
+		                 &pinctrl_lcdif_ctrl_1>;
+	display        = <&display>;
+	status         = "okay";
 
 	display: display {
 		bits-per-pixel = <16>;
-		bus-width = <24>;
+		bus-width      = <16>;
 
 		display-timings {
 			native-mode = <&timing0>;
 			timing0: timing0 {
-				clock-frequency = <33500000>;
-				hactive = <800>;
-				vactive = <480>;
-				hback-porch = <89>;
-				hfront-porch = <164>;
-				vback-porch = <23>;
-				vfront-porch = <10>;
-				hsync-len = <10>;
-				vsync-len = <10>;
-				hsync-active = <0>;
-				vsync-active = <0>;
-				de-active = <1>;
+				clock-frequency = <40000000>;
+				hactive         = <1280>;
+				vactive         = <480>;
+				hback-porch     = <14>;
+				hfront-porch    = <37>;
+				vback-porch     = <10>;
+				vfront-porch    = <4>;
+				hsync-len       = <14>;
+				vsync-len       = <1>;
+				hsync-active    = <0>;
+				vsync-active    = <0>;
+				de-active       = <1>;
 				pixelclk-active = <0>;
 			};
 		};
@@ -188,16 +164,16 @@
 
 &pwm3 {
 	pinctrl-names = "default", "sleep";
-	pinctrl-0 = <&pinctrl_pwm3_0>;
-	pinctrl-1 = <&pinctrl_pwm3_0_sleep>;
-	status = "okay";
+	pinctrl-0     = <&pinctrl_pwm3_0>;
+	pinctrl-1     = <&pinctrl_pwm3_0_sleep>;
+	status        = "okay";
 };
 
 &pwm4 {
   pinctrl-names = "default", "sleep";
-  pinctrl-0 = <&pinctrl_pwm4_0>;
-  pinctrl-1 = <&pinctrl_pwm4_0_sleep>;
-  status = "okay";
+  pinctrl-0     = <&pinctrl_pwm4_0>;
+  pinctrl-1     = <&pinctrl_pwm4_0_sleep>;
+  status        = "okay";
 };
 
 &pxp {
@@ -206,76 +182,76 @@
 
 &ssi2 {
 	fsl,mode = "i2s-slave";
-	status = "okay";
+	status   = "okay";
 };
 
 &uart1 {
 	pinctrl-names = "default";
-	pinctrl-0 = <&pinctrl_uart1_1>;
-	status = "okay";
+	pinctrl-0     = <&pinctrl_uart1_1>;
+	status        = "okay";
 };
 
 &uart2 {
   pinctrl-names = "default";
-  pinctrl-0 = <&pinctrl_uart2_1>;
-  status = "okay";
+  pinctrl-0     = <&pinctrl_uart2_1>;
+  status        = "okay";
 };
 
 &uart3 {
   pinctrl-names = "default";
-  pinctrl-0 = <&pinctrl_uart3_1>;
-  status = "okay";
+  pinctrl-0     = <&pinctrl_uart3_1>;
+  status        = "okay";
 };
 
 &uart4 {
   pinctrl-names = "default";
-  pinctrl-0 = <&pinctrl_uart4_2>;
-  status = "okay";
+  pinctrl-0     = <&pinctrl_uart4_2>;
+  status        = "okay";
 };
 
 &uart5 {
   pinctrl-names = "default";
-  pinctrl-0 = <&pinctrl_uart5_1>;
-  status = "okay";
+  pinctrl-0     = <&pinctrl_uart5_1>;
+  status        = "okay";
 };
 
 &usbotg1 {
-	vbus-supply = <&reg_usb_otg1_vbus>;
-	pinctrl-names = "default";
-	pinctrl-0 = <&pinctrl_usbotg1_1>;
-	disable-over-current;
-	imx6-usb-charger-detection;
-	status = "okay";
+  vbus-supply   = <&reg_usb_otg1_vbus>;
+  pinctrl-names = "default";
+  pinctrl-0     = <&pinctrl_usbotg1_1>;
+  disable-over-current;
+  imx6-usb-charger-detection;
+  status        = "okay";
 };
 
 &usbotg2 {
-	dr_mode = "host";
-	disable-over-current;
-	status = "okay";
+  dr_mode = "host";
+  disable-over-current;
+  status  = "okay";
 };
 
 &usdhc1 {
-	pinctrl-names = "default", "state_100mhz", "state_200mhz";
-	pinctrl-0 = <&pinctrl_usdhc1_2>;
-	pinctrl-1 = <&pinctrl_usdhc1_2_100mhz>;
-	pinctrl-2 = <&pinctrl_usdhc1_2_200mhz>;
-	bus-width = <8>;
-	cd-gpios = <&gpio4 16 0>;
-	wp-gpios = <&gpio4 22 0>;
-	keep-power-in-suspend;
-	enable-sdio-wakeup;
-	status = "okay";
+  pinctrl-names = "default", "state_100mhz", "state_200mhz";
+  pinctrl-0     = <&pinctrl_usdhc1_2>;
+  pinctrl-1     = <&pinctrl_usdhc1_2_100mhz>;
+  pinctrl-2     = <&pinctrl_usdhc1_2_200mhz>;
+  bus-width     = <8>;
+  cd-gpios      = <&gpio4 16 0>;
+  wp-gpios      = <&gpio4 22 0>;
+  keep-power-in-suspend;
+  enable-sdio-wakeup;
+  status        = "okay";
 };
 
 &usdhc2 {
-	pinctrl-names = "default", "state_100mhz", "state_200mhz";
-	pinctrl-0 = <&pinctrl_usdhc2_1>;
-	pinctrl-1 = <&pinctrl_usdhc2_1_100mhz>;
-	pinctrl-2 = <&pinctrl_usdhc2_1_200mhz>;
-	cd-gpios = <&gpio5 0 0>;
-	keep-power-in-suspend;
-	enable-sdio-wakeup;
-	status = "okay";
+  pinctrl-names = "default", "state_100mhz", "state_200mhz";
+  pinctrl-0     = <&pinctrl_usdhc2_1>;
+  pinctrl-1     = <&pinctrl_usdhc2_1_100mhz>;
+  pinctrl-2     = <&pinctrl_usdhc2_1_200mhz>;
+  cd-gpios      = <&gpio5 0 0>;
+  keep-power-in-suspend;
+  enable-sdio-wakeup;
+  status        = "okay";
 };
 
 &epdc {
