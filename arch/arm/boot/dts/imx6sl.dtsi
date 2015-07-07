@@ -1242,6 +1242,24 @@
     };
   };
 
+  uart2 {
+    pinctrl_uart2_1: uart2grp-1 {
+      fsl,pins = <
+        MX6SL_PAD_EPDC_D12__UART2_RX_DATA 0x1b0b1
+        MX6SL_PAD_EPDC_D13__UART2_TX_DATA 0x1b0b1
+      >;
+    };
+  };
+
+  uart3 {
+    pinctrl_uart3_1: uart3grp-1 {
+      fsl,pins = <
+        MX6SL_PAD_EPDC_VCOM0__UART3_RX_DATA 0x1b0b1
+        MX6SL_PAD_EPDC_VCOM1__UART3_TX_DATA 0x1b0b1
+      >;
+    };
+  };
+
   uart4 {
     pinctrl_uart4_1: uart4grp-1 {
       fsl,pins = <
@@ -1252,12 +1270,28 @@
       >;
     };
 
+    pinctrl_uart4_2: uart4grp-2 {
+      fsl,pins = <
+        MX6SL_PAD_SD1_DAT4__UART4_RX_DATA 0x1b0b1
+        MX6SL_PAD_SD1_DAT5__UART4_TX_DATA 0x1b0b1
+      >;
+    };
+
     pinctrl_uart4dte_1: uart4dtegrp-1 {
       fsl,pins = <
         MX6SL_PAD_SD1_DAT5__UART4_RX_DATA 0x1b0b1
         MX6SL_PAD_SD1_DAT4__UART4_TX_DATA 0x1b0b1
         MX6SL_PAD_SD1_DAT6__UART4_CTS_B   0x1b0b1
         MX6SL_PAD_SD1_DAT7__UART4_RTS_B   0x1b0b1
+      >;
+    };
+  };
+
+  uart5 {
+    pinctrl_uart5_1: uart5grp-1 {
+      fsl,pins = <
+        MX6SL_PAD_LCD_DAT14__UART5_RX_DATA 0x1b0b1
+        MX6SL_PAD_LCD_DAT15__UART5_TX_DATA 0x1b0b1
       >;
     };
   };
