@@ -982,6 +982,33 @@
     };
   };
 
+  csi1 {
+    pinctrl_csi_1: csigrp-1 {
+      fsl,pins = <
+        MX6SL_PAD_ECSPI2_MISO__CSI_MCLK   0x110b0
+        MX6SL_PAD_ECSPI2_SCLK__CSI_PIXCLK 0x110b0
+        MX6SL_PAD_ECSPI2_SS0__CSI_VSYNC   0x110b0
+        MX6SL_PAD_ECSPI2_MOSI__CSI_HSYNC  0x110b0
+        MX6SL_PAD_SD3_DAT3__CSI_DATA15    0x110b0
+        MX6SL_PAD_SD3_DAT2__CSI_DATA14    0x110b0
+        MX6SL_PAD_SD3_DAT1__CSI_DATA13    0x110b0
+        MX6SL_PAD_SD3_DAT0__CSI_DATA12    0x110b0
+        MX6SL_PAD_EPDC_SDSHR__CSI_DATA11  0x110b0
+        MX6SL_PAD_EPDC_SDOE__CSI_DATA10   0x110b0
+        MX6SL_PAD_EPDC_SDLE__CSI_DATA09   0x110b0
+        MX6SL_PAD_EPDC_SDCLK__CSI_DATA08  0x110b0
+        MX6SL_PAD_EPDC_D7__CSI_DATA07     0x110b0
+        MX6SL_PAD_EPDC_D6__CSI_DATA06     0x110b0
+        MX6SL_PAD_EPDC_D5__CSI_DATA05     0x110b0
+        MX6SL_PAD_EPDC_D4__CSI_DATA04     0x110b0
+        MX6SL_PAD_EPDC_D3__CSI_DATA03     0x110b0
+        MX6SL_PAD_EPDC_D2__CSI_DATA02     0x110b0
+        MX6SL_PAD_EPDC_D1__CSI_DATA01     0x110b0
+        MX6SL_PAD_EPDC_D0__CSI_DATA00     0x110b0
+      >;
+    };
+  };
+
   ecspi1 {
     pinctrl_ecspi1_1: ecspi1grp-1 {
       fsl,pins = <
