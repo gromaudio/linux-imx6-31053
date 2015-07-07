@@ -9,11 +9,93 @@
 /dts-v1/;
 
 #include "imx6sl.dtsi"
-#include "imx6sl-vcore-lite.dtsi"
+/*#include "imx6sl-vcore-lite.dtsi"*/
 
 / {
 	model = "Gromaudio i.MX6SL VCoreLite Board";
 	compatible = "fsl,imx6sl-evk", "fsl,imx6sl";
+
+  memory {
+    reg = <0x80000000 0x40000000>;
+  };
+
+  regulators {
+    compatible = "simple-bus";
+
+    reg_usb_otg1_vbus: usb_otg1_vbus {
+      compatible = "regulator-fixed";
+      regulator-name = "usb_otg1_vbus";
+      regulator-min-microvolt = <5000000>;
+      regulator-max-microvolt = <5000000>;
+      gpio = <&gpio4 0 0>;
+      enable-active-high;
+    };
+
+    reg_usb_otg2_vbus: usb_otg2_vbus {
+      compatible = "regulator-fixed";
+      regulator-name = "usb_otg2_vbus";
+      regulator-min-microvolt = <5000000>;
+      regulator-max-microvolt = <5000000>;
+      gpio = <&gpio4 2 0>;
+      enable-active-high;
+    };
+  };
+
+  pwm-backlight {
+    compatible = "pwm-backlight";
+    pwms = <&pwm1 0 5000000>;
+    brightness-levels = <0 4 8 16 32 64 128 255>;
+    default-brightness-level = <7>;
+  };
+
+  ramoops_device {
+    compatible = "fsl,mxc_ramoops";
+    record_size = <524288>; /*512K*/
+    console_size= <262144>; /*256K*/
+    ftrace_size= <262144>;  /*256K*/
+    dump_oops = <1>;
+    status = "okay";
+  };
+};
+
+&audmux {
+  pinctrl-names = "default";
+  pinctrl-0 = <&pinctrl_audmux_1>;
+  status = "okay";
+};
+
+&csi1 {
+  status = "disabled";
+};
+
+&ecspi1 {
+  fsl,spi-num-chipselects = <1>;
+  cs-gpios = <&gpio4 11 0>;
+  pinctrl-names = "default";
+  pinctrl-0 = <&pinctrl_ecspi1_1>;
+  status = "okay";
+
+  flash: m25p80@0 {
+    #address-cells = <1>;
+    #size-cells = <1>;
+    compatible = "st,m25p32";
+    spi-max-frequency = <20000000>;
+    reg = <0>;
+  };
+};
+
+&gpc {
+  fsl,cpu_pupscr_sw2iso = <0xf>;
+  fsl,cpu_pupscr_sw = <0xf>;
+  fsl,cpu_pdnscr_iso2sw = <0x1>;
+  fsl,cpu_pdnscr_iso = <0x1>;
+  fsl,ldo-bypass = <1>; /* use ldo-bypass, u-boot will check it and configure */
+  fsl,wdog-reset = <1>; /* watchdog select of reset source */
+  pu-supply = <&pu_dummy>; /* ldo-bypass:use pu_dummy if VDDSOC share with VDDPU */
+};
+
+&gpu {
+  pu-supply = <&pu_dummy>; /* ldo-bypass:use pu_dummy if VDDSOC share with VDDPU */
 };
 
 &i2c1 {
@@ -82,9 +164,8 @@
 
 &lcdif {
 	pinctrl-names = "default";
-	pinctrl-0 = <&pinctrl_lcdif_dat_0
-		     &pinctrl_lcdif_ctrl_0>;
-	lcd-supply = <&reg_lcd_3v3>;
+	pinctrl-0 = < &pinctrl_lcdif_dat_0
+		            &pinctrl_lcdif_ctrl_0>;
 	display = <&display>;
 	status = "okay";
 
