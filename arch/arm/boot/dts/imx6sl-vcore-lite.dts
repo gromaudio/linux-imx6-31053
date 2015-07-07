@@ -9,7 +9,6 @@
 /dts-v1/;
 
 #include "imx6sl.dtsi"
-/*#include "imx6sl-vcore-lite.dtsi"*/
 
 / {
 	model = "Gromaudio i.MX6SL VCoreLite Board";
@@ -127,8 +126,6 @@
 	hog {
 		pinctrl_hog: hoggrp {
 			fsl,pins = <
-				MX6SL_PAD_KEY_ROW7__GPIO4_IO07    0x17059
-				MX6SL_PAD_KEY_COL7__GPIO4_IO06    0x17059
 				MX6SL_PAD_SD2_DAT7__GPIO5_IO00    0x17059
 				MX6SL_PAD_SD2_DAT6__GPIO4_IO29    0x17059
 				MX6SL_PAD_REF_CLK_32K__GPIO3_IO22 0x17059
@@ -146,7 +143,6 @@
 				MX6SL_PAD_ECSPI2_MOSI__GPIO4_IO13 0x17000
 				MX6SL_PAD_ECSPI2_SS0__GPIO4_IO15  0x17000
 				MX6SL_PAD_FEC_RX_ER__GPIO4_IO19   0x1b0b0
-				MX6SL_PAD_LCD_RESET__GPIO2_IO19 0x1b0b0
 				MX6SL_PAD_KEY_COL4__GPIO4_IO00	0x80000000
 				MX6SL_PAD_KEY_COL5__GPIO4_IO02	0x80000000
 			>;
@@ -156,7 +152,6 @@
 			fsl,pins = <
 				MX6SL_PAD_KEY_ROW5__GPIO4_IO03	  0x3080
 				MX6SL_PAD_KEY_COL6__GPIO4_IO04 	  0x3080
-				MX6SL_PAD_LCD_RESET__GPIO2_IO19   0x3080
 			>;
 		};
 	};
@@ -164,8 +159,8 @@
 
 &lcdif {
 	pinctrl-names = "default";
-	pinctrl-0 = < &pinctrl_lcdif_dat_0
-		            &pinctrl_lcdif_ctrl_0>;
+	pinctrl-0 = < &pinctrl_lcdif_dat_1
+		            &pinctrl_lcdif_ctrl_1>;
 	display = <&display>;
 	status = "okay";
 
