@@ -975,6 +975,26 @@
     };
   };
 
+  ecspi3 {
+    pinctrl_ecspi3_1: ecspi3grp-1 {
+      fsl,pins = <
+        MX6SL_PAD_EPDC_D9__ECSPI3_MISO  0x100b1
+        MX6SL_PAD_EPDC_D8__ECSPI3_MOSI  0x100b1
+        MX6SL_PAD_EPDC_D11__ECSPI3_SCLK 0x100b1
+      >;
+    };
+  };
+
+  ecspi4 {
+    pinctrl_ecspi4_1: ecspi4grp-1 {
+      fsl,pins = <
+        MX6SL_PAD_FEC_CRS_DV__ECSPI4_MISO 0x100b1
+        MX6SL_PAD_FEC_RX_ER__ECSPI4_MOSI  0x100b1
+        MX6SL_PAD_FEC_TX_CLK__ECSPI4_SCLK 0x100b1
+      >;
+    };
+  };
+
   epdc {
     pinctrl_epdc_0: epdcgrp-0 {
       fsl,pins = <

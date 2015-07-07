@@ -67,20 +67,20 @@
   status = "disabled";
 };
 
-&ecspi1 {
+&ecspi3 {
   fsl,spi-num-chipselects = <1>;
-  cs-gpios = <&gpio4 11 0>;
+  cs-gpios = <&gpio3 12 0>;
   pinctrl-names = "default";
-  pinctrl-0 = <&pinctrl_ecspi1_1>;
+  pinctrl-0 = <&pinctrl_ecspi3_1>;
   status = "okay";
+};
 
-  flash: m25p80@0 {
-    #address-cells = <1>;
-    #size-cells = <1>;
-    compatible = "st,m25p32";
-    spi-max-frequency = <20000000>;
-    reg = <0>;
-  };
+&ecspi4 {
+  fsl,spi-num-chipselects = <1>;
+  cs-gpios = <&gpio4 18 0>;
+  pinctrl-names = "default";
+  pinctrl-0 = <&pinctrl_ecspi4_1>;
+  status = "okay";
 };
 
 &gpc {
@@ -88,9 +88,9 @@
   fsl,cpu_pupscr_sw = <0xf>;
   fsl,cpu_pdnscr_iso2sw = <0x1>;
   fsl,cpu_pdnscr_iso = <0x1>;
-  fsl,ldo-bypass = <1>; /* use ldo-bypass, u-boot will check it and configure */
-  fsl,wdog-reset = <1>; /* watchdog select of reset source */
-  pu-supply = <&pu_dummy>; /* ldo-bypass:use pu_dummy if VDDSOC share with VDDPU */
+  fsl,ldo-bypass = <1>;     /* use ldo-bypass, u-boot will check it and configure */
+  fsl,wdog-reset = <1>;     /* watchdog select of reset source */
+  pu-supply = <&pu_dummy>;  /* ldo-bypass:use pu_dummy if VDDSOC share with VDDPU */
 };
 
 &gpu {
@@ -130,6 +130,8 @@
 				MX6SL_PAD_FEC_TXD1__GPIO4_IO16      0x17059     /* SD1 CD */
         MX6SL_PAD_FEC_RXD0__GPIO4_IO17      0x17059     /* SD1 VSELECT */
         MX6SL_PAD_SD2_DAT7__GPIO5_IO00      0x17059     /* SD2 CD */
+        MX6SL_PAD_I2C1_SCL__GPIO3_IO12      0x80000000  /* ECSPI3 CS */
+        MX6SL_PAD_FEC_RXD1__GPIO4_IO18      0x80000000  /* ECSPI4 CS */
 				MX6SL_PAD_REF_CLK_32K__GPIO3_IO22 0x17059
 				MX6SL_PAD_FEC_TX_CLK__GPIO4_IO21  0x80000000
 				MX6SL_PAD_KEY_ROW5__GPIO4_IO03	  0x110b0
@@ -206,12 +208,6 @@
 };
 
 &pxp {
-	status = "okay";
-};
-
-&spdif {
-	pinctrl-names = "default";
-	pinctrl-0 = <&pinctrl_spdif_1>;
 	status = "okay";
 };
 
