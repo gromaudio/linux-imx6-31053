@@ -59,7 +59,7 @@
 
 &audmux {
   pinctrl-names = "default";
-  pinctrl-0 = <&pinctrl_audmux_1>;
+  pinctrl-0 = <&pinctrl_audmux_2>;
   status = "okay";
 };
 
