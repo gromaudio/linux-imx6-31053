@@ -1197,6 +1197,34 @@
     };
   };
 
+  pwm3 {
+    pinctrl_pwm3_0: pwm3grp-0 {
+      fsl,pins = <
+        MX6SL_PAD_EPDC_SDCE0__PWM3_OUT 0x110b0
+      >;
+    };
+
+    pinctrl_pwm3_0_sleep: pwm3grp-0-sleep {
+      fsl,pins = <
+        MX6SL_PAD_EPDC_SDCE0__GPIO1_IO27 0x3080
+      >;
+    };
+  };
+
+  pwm4 {
+    pinctrl_pwm4_0: pwm4grp-0 {
+      fsl,pins = <
+        MX6SL_PAD_AUD_MCLK__PWM4_OUT 0x110b0
+      >;
+    };
+
+    pinctrl_pwm4_0_sleep: pwm4grp-0-sleep {
+      fsl,pins = <
+        MX6SL_PAD_AUD_MCLK__GPIO1_IO06 0x3080
+      >;
+    };
+  };
+
   spdif {
     pinctrl_spdif_1: spdifgrp-1 {
       fsl,pins = <
