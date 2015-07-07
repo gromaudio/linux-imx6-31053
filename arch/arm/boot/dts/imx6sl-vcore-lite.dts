@@ -29,15 +29,6 @@
       gpio = <&gpio4 0 0>;
       enable-active-high;
     };
-
-    reg_usb_otg2_vbus: usb_otg2_vbus {
-      compatible = "regulator-fixed";
-      regulator-name = "usb_otg2_vbus";
-      regulator-min-microvolt = <5000000>;
-      regulator-max-microvolt = <5000000>;
-      gpio = <&gpio4 2 0>;
-      enable-active-high;
-    };
   };
 
   pwm-backlight {
@@ -132,6 +123,7 @@
         MX6SL_PAD_SD2_DAT7__GPIO5_IO00      0x17059     /* SD2 CD */
         MX6SL_PAD_I2C1_SCL__GPIO3_IO12      0x80000000  /* ECSPI3 CS */
         MX6SL_PAD_FEC_RXD1__GPIO4_IO18      0x80000000  /* ECSPI4 CS */
+        MX6SL_PAD_KEY_COL4__GPIO4_IO00      0x80000000  /* USBOTG1 PWR */
 				MX6SL_PAD_REF_CLK_32K__GPIO3_IO22 0x17059
 				MX6SL_PAD_FEC_TX_CLK__GPIO4_IO21  0x80000000
 				MX6SL_PAD_KEY_ROW5__GPIO4_IO03	  0x110b0
@@ -147,7 +139,6 @@
 				MX6SL_PAD_ECSPI2_MOSI__GPIO4_IO13 0x17000
 				MX6SL_PAD_ECSPI2_SS0__GPIO4_IO15  0x17000
 				MX6SL_PAD_FEC_RX_ER__GPIO4_IO19   0x1b0b0
-				MX6SL_PAD_KEY_COL4__GPIO4_IO00	0x80000000
 				MX6SL_PAD_KEY_COL5__GPIO4_IO02	0x80000000
 			>;
 		};
@@ -256,7 +247,6 @@
 };
 
 &usbotg2 {
-	vbus-supply = <&reg_usb_otg2_vbus>;
 	dr_mode = "host";
 	disable-over-current;
 	status = "okay";
