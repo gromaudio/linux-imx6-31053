@@ -198,6 +198,87 @@ static struct fb_videomode lcdif_modedb[] = {
 	  FB_SYNC_HOR_HIGH_ACT | FB_SYNC_VERT_HIGH_ACT,
 	  FB_VMODE_INTERLACED,
 	  FB_MODE_IS_DETAILED,},
+	{
+	// 800x480 @ 60 Hz , pixel clk @ 32MHz
+	 "ACURA_800", 60, 800, 480, 30093,
+	 112, 68,
+	 31, 5,
+	 80, 6,
+	 0,
+	 FB_VMODE_NONINTERLACED,
+	 0,},
+	{
+	// 480x234 @ 60 Hz , pixel clk @ 9.5MHz
+	 "ACURA_480", 60, 480, 234, 105152,
+	 54, 22,
+	 17, 8,
+	 49, 3,
+	 0,
+	 FB_VMODE_NONINTERLACED,
+	 0,},
+	{
+	 // 800x480 @ 60 Hz , pixel clk @ 33MHz
+	 "LEXUS", 60, 800, 480, 30303,
+	 89, 39,
+	 33, 10,
+	 128, 2,
+	 0,
+	 FB_VMODE_NONINTERLACED,
+	 0,},
+	{
+	 // 640x240 @ 60 Hz , pixel clk @ 8MHz
+	 "BMW_ANALOG", 60, 400, 234, 125000,
+	 60, 12,
+	 17, 8,
+	 38, 3,
+	 0,
+	 FB_VMODE_NONINTERLACED,
+	 0,},
+	{
+	 // 640x240 @ 60 Hz , pixel clk @ 40MHz
+	 "BMW_800", 60, 800, 600, 25000,
+	 40, 88,
+	 1, 23,
+	 128, 4,
+	 FB_SYNC_CLK_LAT_FALL | FB_SYNC_HOR_HIGH_ACT | FB_SYNC_VERT_HIGH_ACT,
+	 FB_VMODE_NONINTERLACED,
+	 0,},
+	{
+	 // 480x240 @ 60 Hz , pixel clk @ 15MHz
+	 "AUDI_2G", 60, 480, 240, 66666,
+	 90, 380,
+	 8, 10,
+	 6, 3,
+	 FB_SYNC_CLK_LAT_FALL | FB_SYNC_HOR_HIGH_ACT | FB_SYNC_VERT_HIGH_ACT,
+	 FB_VMODE_NONINTERLACED,
+	 0,},
+	{
+	 // 400x240 @ 60 Hz , pixel clk @ 20MHz
+	 "BMW_400", 60, 400, 240, 50000,
+	 25, 700,
+	 17, 19,
+	 64, 4,
+	 FB_SYNC_CLK_LAT_FALL | FB_SYNC_HOR_HIGH_ACT | FB_SYNC_VERT_HIGH_ACT,
+	 FB_VMODE_NONINTERLACED,
+	 0,},
+	{
+	 // 640x240 @ 60 Hz , pixel clk @ 20MHz
+	 "BMW_640", 60, 640, 240, 50000,
+	 21, 464,
+	 6, 24,
+	 64, 4,
+	 FB_SYNC_CLK_LAT_FALL,
+	 FB_VMODE_NONINTERLACED,
+	 0,},
+	 {
+	 // 1280x480 @ 60 Hz , pixel clk @ 40MHz
+	 "BMW_1280", 60, 1280, 480, 25000,
+	 14, 37,  // left, right
+	 10, 4,    // up, down
+	 14, 1,   // hsync,vsync
+	 FB_SYNC_CLK_LAT_FALL,
+	 FB_VMODE_NONINTERLACED,
+	 0,},
 };
 static int lcdif_modedb_sz = ARRAY_SIZE(lcdif_modedb);
 

@@ -1872,9 +1872,12 @@ int32_t ipu_init_sync_panel(struct ipu_soc *ipu, int disp, uint32_t pixel_clk,
 		 * we will only use 1/2 fraction for ipu clk,
 		 * so if the clk rate is not fit, try ext clk.
 		 */
+		dev_dbg(ipu->dev, "int_clk %d, %d %d\n", sig.int_clk, rounded_pixel_clk, pixel_clk);
+
 		if (!sig.int_clk &&
-			((rounded_pixel_clk >= pixel_clk + pixel_clk/200) ||
-			(rounded_pixel_clk <= pixel_clk - pixel_clk/200))) {
+			((rounded_pixel_clk >= pixel_clk + pixel_clk/400) ||
+			(rounded_pixel_clk <= pixel_clk - pixel_clk/400))) {
+
 			dev_dbg(ipu->dev, "try ipu ext di clk\n");
 
 			rounded_pixel_clk =
