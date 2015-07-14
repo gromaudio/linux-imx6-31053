@@ -47,11 +47,26 @@
     dump_oops    = <1>;
     status       = "okay";
   };
+
+  sound {
+    compatible   = "fsl,imx6sl-vcore-lite-tlv320aic3106",
+                   "fsl,imx-audio-tlv320aic3106";
+    model        = "tlv320aic3106-audio";
+    cpu-dai      = <&ssi2>;
+    audio-codec  = <&codec>;
+    mux-int-port = <2>;
+    mux-ext-port = <4>;
+  };
 };
 
 &audmux {
   pinctrl-names = "default";
   pinctrl-0     = <&pinctrl_audmux_2>;
+  status        = "okay";
+};
+
+&ssi2 {
+  fsl,mode      = "i2s-slave";
   status        = "okay";
 };
 
@@ -104,6 +119,12 @@
   pinctrl-names   = "default";
   pinctrl-0       = <&pinctrl_i2c3_1>;
   status          = "okay";
+
+  codec: tlv320aic3x@18 {
+    compatible = "ti,tlv320aic3x";
+    reg = <0x18>;
+    clocks = <&clks IMX6SL_CLK_EXTERN_AUDIO>;
+  };
 };
 
 &iomuxc {
@@ -121,6 +142,7 @@
         MX6SL_PAD_FEC_RXD1__GPIO4_IO18      0x80000000  /* ECSPI4 CS */
         MX6SL_PAD_KEY_COL4__GPIO4_IO00      0x80000000  /* USBOTG1 PWR */
         MX6SL_PAD_SD3_CLK__GPIO5_IO18       0x17059     /* USBOTG2 RESET */
+        MX6SL_PAD_PWM1__CCM_CLKO            0x00b0      /* CODEC MCLK */
 			>;
 		};
 	};

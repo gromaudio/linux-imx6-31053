@@ -21,7 +21,7 @@
 
 / {
   model      = "Gromaudio i.MX6 Quad/Dual VCore r1 Board";
-  compatible = "fsl,imx6q-sabrelite", "fsl,imx6q";
+  compatible = "fsl,imx6q-vcore-r1", "fsl,imx6q";
 
   aliases {
     mxcfb0       = &lcd_display;
@@ -79,19 +79,35 @@
     };
   };
 
+  sound {
+    compatible      = "fsl,imx6q-vcore-r1-tlv320aic3106",
+                      "fsl,imx-audio-tlv320aic3106";
+    model           = "tlv320-audio";
+    cpu-dai         = <&ssi1>;
+    audio-codec     = <&codec>;
+    audio-routing   = "LINE1L", "Line In 1 Jack",
+                      "LINE1R", "Line In 1 Jack",
+                      "LINE2L", "Line In 2 Jack",
+                      "LINE2R", "Line In 2 Jack",
+                      "Headphone Jack", "HPLOUT",
+                      "Headphone Jack", "HPROUT";
+    mux-int-port    = <1>;
+    mux-ext-port    = <4>;
+  };
+/*
   sound-hdmi {
     compatible      = "fsl,imx6q-audio-hdmi",
                       "fsl,imx-audio-hdmi";
     model           = "imx-audio-hdmi";
     hdmi-controller = <&hdmi_audio>;
   };
-
+*/
   lcd_display: fb@0 {
     compatible        = "fsl,mxc_sdc_fb";
     disp_dev          = "lcd";
     interface_pix_fmt = "RGB565";
     mode_str          = "BMW_1280";
-    default_bpp       = <32>;
+    default_bpp       = <16>;
     int_clk           = <0>;
     late_init         = <0>;
     status            = "okay";
@@ -117,6 +133,8 @@
     pinctrl-0     = <&pinctrl_ipu1_4>;
     status        = "okay";
   };
+
+
 };
 
 &audmux {
@@ -183,6 +201,17 @@
   pinctrl-names   = "default";
   pinctrl-0       = <&pinctrl_i2c1_2>;
   status          = "okay";
+
+  codec: tlv320aic3x@18 {
+    compatible      = "ti,tlv320aic3x";
+    reg             = <0x18>;
+    clocks          = <&clks 201>;
+    ai3x-micbias-vg = <1>;
+    IOVDD-supply    = <&reg_3p3v>;
+    DVDD-supply     = <&reg_1p8v>;
+    AVDD-supply     = <&reg_3p3v>;
+    DRVDD-supply    = <&reg_3p3v>;
+  };
 };
 
 &i2c2 {
@@ -208,7 +237,7 @@
   pinctrl-names = "default";
   pinctrl-0     = <&pinctrl_hog_1>;
 
-  imx6q-sabrelite {
+  imx6q-vcore-r1 {
     pinctrl_hog_1: hoggrp-1 {
       fsl,pins = <
         MX6QDL_PAD_EIM_D19__GPIO3_IO19    0x80000000  /* ECSPI_1 CS */

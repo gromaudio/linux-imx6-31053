@@ -1512,6 +1512,8 @@ static int aic3x_i2c_probe(struct i2c_client *i2c,
 	int ret;
 	u32 value;
 
+	dev_err(&i2c->dev, "aic3x_i2c_probe: 0x%08x\n", (u32)np);
+
 	aic3x = devm_kzalloc(&i2c->dev, sizeof(struct aic3x_priv), GFP_KERNEL);
 	if (aic3x == NULL) {
 		dev_err(&i2c->dev, "failed to create private data\n");
@@ -1577,6 +1579,7 @@ static int aic3x_i2c_probe(struct i2c_client *i2c,
 
 static int aic3x_i2c_remove(struct i2c_client *client)
 {
+	dev_err(&client->dev, "aic3x_i2c_remove\n");
 	snd_soc_unregister_codec(&client->dev);
 	return 0;
 }

@@ -39,8 +39,6 @@ static int __init virtual_init(void)
 {
   int i, error;
 
-  printk(KERN_ERR "VIRTUAL_KBD_init\n" );
-
   virtual_dev = input_allocate_device();
   if (!virtual_dev)
     return -ENOMEM;
