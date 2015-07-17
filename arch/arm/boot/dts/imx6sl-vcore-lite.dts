@@ -13,7 +13,7 @@
 
 / {
   model      = "Gromaudio i.MX6SL VCoreLite Board";
-  compatible = "fsl,imx6sl-evk", "fsl,imx6sl";
+  compatible = "fsl,imx6q-vcore-lite", "fsl,imx6sl";
 
   memory {
     reg = <0x80000000 0x20000000>;
@@ -22,6 +22,21 @@
   regulators {
     compatible = "simple-bus";
 
+    reg_1p8v: 1p8v {
+      compatible              = "regulator-fixed";
+      regulator-name          = "1P8V";
+      regulator-min-microvolt = <1800000>;
+      regulator-max-microvolt = <1800000>;
+      regulator-always-on;
+    };
+
+    reg_3p3v: 3p3v {
+      compatible              = "regulator-fixed";
+      regulator-name          = "3P3V";
+      regulator-min-microvolt = <3300000>;
+      regulator-max-microvolt = <3300000>;
+      regulator-always-on;
+    };
     reg_usb_otg1_vbus: usb_otg1_vbus {
       compatible              = "regulator-fixed";
       regulator-name          = "usb_otg1_vbus";
@@ -36,7 +51,7 @@
     compatible               = "pwm-backlight";
     pwms                     = <&pwm3 0 5000000>;
     brightness-levels        = <0 4 8 16 32 64 128 255>;
-    default-brightness-level = <7>;
+    default-brightness-level = <6>;
   };
 
   ramoops_device {
@@ -49,13 +64,19 @@
   };
 
   sound {
-    compatible   = "fsl,imx6sl-vcore-lite-tlv320aic3106",
-                   "fsl,imx-audio-tlv320aic3106";
-    model        = "tlv320aic3106-audio";
-    cpu-dai      = <&ssi2>;
-    audio-codec  = <&codec>;
-    mux-int-port = <2>;
-    mux-ext-port = <4>;
+    compatible      = "fsl,imx6q-vcore-lite-tlv320aic3106",
+                      "fsl,imx-audio-tlv320aic3106";
+    model           = "tlv320-audio";
+    cpu-dai         = <&ssi2>;
+    audio-codec     = <&codec>;
+    audio-routing   = "LINE1L", "Line In 1 Jack",
+                      "LINE1R", "Line In 1 Jack",
+                      "LINE2L", "Line In 2 Jack",
+                      "LINE2R", "Line In 2 Jack",
+                      "Headphone Jack", "HPLOUT",
+                      "Headphone Jack", "HPROUT";
+    mux-int-port    = <2>;
+    mux-ext-port    = <4>;
   };
 };
 
@@ -121,9 +142,14 @@
   status          = "okay";
 
   codec: tlv320aic3x@18 {
-    compatible = "ti,tlv320aic3x";
-    reg = <0x18>;
-    clocks = <&clks IMX6SL_CLK_EXTERN_AUDIO>;
+    compatible      = "ti,tlv320aic3x";
+    reg             = <0x18>;
+    clocks          = <&clks IMX6SL_CLK_EXTERN_AUDIO>;
+    ai3x-micbias-vg = <1>;
+    IOVDD-supply    = <&reg_3p3v>;
+    DVDD-supply     = <&reg_1p8v>;
+    AVDD-supply     = <&reg_3p3v>;
+    DRVDD-supply    = <&reg_3p3v>;
   };
 };
 
@@ -142,7 +168,6 @@
         MX6SL_PAD_FEC_RXD1__GPIO4_IO18      0x80000000  /* ECSPI4 CS */
         MX6SL_PAD_KEY_COL4__GPIO4_IO00      0x80000000  /* USBOTG1 PWR */
         MX6SL_PAD_SD3_CLK__GPIO5_IO18       0x17059     /* USBOTG2 RESET */
-        MX6SL_PAD_PWM1__CCM_CLKO            0x00b0      /* CODEC MCLK */
 			>;
 		};
 	};
@@ -160,7 +185,7 @@
 		bus-width      = <16>;
 
 		display-timings {
-			native-mode = <&timing0>;
+			native-mode = <&timing1>;
 			timing0: timing0 {
 				clock-frequency = <40000000>;
 				hactive         = <1280>;
@@ -176,6 +201,22 @@
 				de-active       = <1>;
 				pixelclk-active = <0>;
 			};
+
+      timing1: timing1 {
+        clock-frequency = <33000000>;
+        hactive         = <800>;
+        vactive         = <480>;
+        hback-porch     = <89>;
+        hfront-porch    = <39>;
+        vback-porch     = <33>;
+        vfront-porch    = <10>;
+        hsync-len       = <128>;
+        vsync-len       = <2>;
+        hsync-active    = <0>;
+        vsync-active    = <0>;
+        de-active       = <1>;
+        pixelclk-active = <0>;
+      };
 		};
 	};
 };
@@ -187,20 +228,13 @@
 	status        = "okay";
 };
 
-&pwm4 {
-  pinctrl-names = "default", "sleep";
-  pinctrl-0     = <&pinctrl_pwm4_0>;
-  pinctrl-1     = <&pinctrl_pwm4_0_sleep>;
-  status        = "okay";
-};
-
 &pxp {
 	status = "okay";
 };
 
 &ssi2 {
-	fsl,mode = "i2s-slave";
-	status   = "okay";
+  fsl,mode = "i2s-slave";
+  status   = "okay";
 };
 
 &uart1 {
