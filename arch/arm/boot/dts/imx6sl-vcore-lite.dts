@@ -10,6 +10,8 @@
 /dts-v1/;
 
 #include "imx6sl.dtsi"
+#include <dt-bindings/gpio/gpio.h>
+#include <dt-bindings/input/input.h>
 
 / {
   model      = "Gromaudio i.MX6SL VCoreLite Board";
@@ -61,6 +63,16 @@
     ftrace_size  = <262144>;  /*256K*/
     dump_oops    = <1>;
     status       = "okay";
+  };
+
+  gpio-keys {
+    compatible = "gpio-keys";
+    power {
+      label = "Power Button";
+      gpios = <&gpio3 30 GPIO_ACTIVE_LOW>;
+      linux,code = <KEY_POWER>;
+      gpio-key,wakeup;
+    };
   };
 
   sound {
@@ -168,6 +180,7 @@
         MX6SL_PAD_FEC_RXD1__GPIO4_IO18      0x80000000  /* ECSPI4 CS */
         MX6SL_PAD_KEY_COL4__GPIO4_IO00      0x80000000  /* USBOTG1 PWR */
         MX6SL_PAD_SD3_CLK__GPIO5_IO18       0x17059     /* USBOTG2 RESET */
+        MX6SL_PAD_KEY_COL3__GPIO3_IO30      0x17059     /* POWER BUTTON */
 			>;
 		};
 	};
