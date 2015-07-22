@@ -38,6 +38,7 @@
 #include "f_accessory.c"
 #define USB_ETH_RNDIS y
 #include "f_rndis.c"
+#include "f_ncm.c"
 #include "rndis.c"
 #include "u_ether.c"
 
@@ -48,6 +49,8 @@ MODULE_VERSION("1.0");
 
 static const char longname[] = "Gadget Android";
 static struct wake_lock wakelock;
+static struct eth_dev *the_dev;
+static u8 hostaddr[ETH_ALEN];
 
 /* Default vendor and product IDs, overridden by userspace */
 #define VENDOR_ID		0x18D1
@@ -212,6 +215,32 @@ struct functionfs_config {
 	bool opened;
 	bool enabled;
 	struct ffs_data *data;
+};
+
+static int ncm_function_init(struct android_usb_function *f, struct usb_composite_dev *cdev)
+{
+  the_dev = gether_setup(cdev->gadget, hostaddr);
+  if (IS_ERR(the_dev))
+    return PTR_ERR(the_dev);
+
+  return 0;
+}
+
+static void ncm_function_cleanup(struct android_usb_function *f)
+{
+  gether_cleanup(the_dev);
+}
+
+static int ncm_function_bind_config(struct android_usb_function *f, struct usb_configuration *c)
+{
+  return ncm_bind_config(c, hostaddr, the_dev);
+}
+
+static struct android_usb_function ncm_function = {
+  .name         = "ncm",
+  .init         = ncm_function_init,
+  .cleanup      = ncm_function_cleanup,
+  .bind_config  = ncm_function_bind_config,
 };
 
 static int ffs_function_init(struct android_usb_function *f,
@@ -941,6 +970,7 @@ static struct android_usb_function *supported_functions[] = {
 	&mass_storage_function,
 	&accessory_function,
 	&audio_source_function,
+  &ncm_function,
 	NULL
 };
 
