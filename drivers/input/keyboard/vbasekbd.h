@@ -1,6 +1,6 @@
 #include <linux/input.h>
 
-int virtual_key_array[] = {
+int vbase_key_array[] = {
         KEY_RESERVED,
         KEY_ESC,
         KEY_1,
@@ -499,7 +499,7 @@ int virtual_key_array[] = {
         BTN_TRIGGER_HAPPY40,
 };
 
-int virtual_rel_array[] = {
+int vbase_rel_array[] = {
         REL_X,
         REL_Y,
         REL_Z,

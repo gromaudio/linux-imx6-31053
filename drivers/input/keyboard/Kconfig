@@ -12,15 +12,15 @@ menuconfig INPUT_KEYBOARD
 
 if INPUT_KEYBOARD
 
-config KEYBOARD_VIRTUAL
-  tristate "Virtual input device"
+config KEYBOARD_VBASE
+  tristate "VBase input device"
   help
-    This option enables support for the virtual keyboar device.
+    This option enables support for the VBase keyboar device.
     It doesn't depend on any real hardware device.
     All events are being sent using eventX node in /dev/input. 
 
     To compile this driver as a module, choose M here: the module will
-    be called virtkbd.ko.
+    be called vbasekbd.ko.
 
 config KEYBOARD_ADP5520
 	tristate "Keypad Support for ADP5520 PMIC"
