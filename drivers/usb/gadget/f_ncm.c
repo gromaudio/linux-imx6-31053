@@ -180,7 +180,9 @@ static struct usb_cdc_ether_desc ecm_desc = {
 	.bNumberPowerFilters =	0,
 };
 
-#define NCAPS	(USB_CDC_NCM_NCAP_ETH_FILTER | USB_CDC_NCM_NCAP_CRC_MODE)
+//#define NCAPS	(USB_CDC_NCM_NCAP_ETH_FILTER | USB_CDC_NCM_NCAP_CRC_MODE)
+#define NCAPS (USB_CDC_NCM_NCAP_CRC_MODE )
+
 
 static struct usb_cdc_ncm_desc ncm_desc = {
 	.bLength =		sizeof ncm_desc,
@@ -321,9 +323,9 @@ static struct usb_descriptor_header *ncm_hs_function[] = {
 #define STRING_IAD_IDX	3
 
 static struct usb_string ncm_string_defs[] = {
-	[STRING_CTRL_IDX].s = "CDC Network Control Model (NCM)",
-	[STRING_MAC_IDX].s = "",
-	[STRING_DATA_IDX].s = "CDC Network Data",
+	[STRING_CTRL_IDX].s = "CDC NCM Comm Interface",
+	[STRING_MAC_IDX].s = NULL,
+	[STRING_DATA_IDX].s = "CDC NCM Data Interface",
 	[STRING_IAD_IDX].s = "CDC NCM",
 	{  } /* end of list */
 };
