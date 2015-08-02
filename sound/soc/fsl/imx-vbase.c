@@ -1,10 +1,9 @@
 /*
- * sound/soc/imx/imx-tlv320aic3106.c --  SoC audio for iMX6 VLine board 
- *                                       with TLV320AIC3106 codec.
+ * sound/soc/imx/imx-vbase.c --  SoC audio for iMX6 VBase board.
  *
  * Authors: Ivan Zaitsev, <ivan.zaitsev@gmail.com>
  *
- * Copyright 2014 X-Media tech, Inc.
+ * Copyright 2015 X-Media tech, Inc.
  * Copyright (C) 2011-2012 Freescale Semiconductor, Inc.
  *
  * This program is free software; you can redistribute  it and/or modify it
@@ -20,15 +19,13 @@
 #include <linux/of_i2c.h>
 #include <linux/clk.h>
 #include <sound/soc.h>
-
-#include "../codecs/tlv320aic3x.h"
 #include "imx-audmux.h"
 
 //-------------------------------------------------------------------------------------------------
 #define DAI_NAME_SIZE 32
 
 //-------------------------------------------------------------------------------------------------
-struct imx_tlv320aic3106_data {
+struct imx_vbase_data {
   struct        snd_soc_dai_link dai;
   struct        snd_soc_card card;
   char          codec_dai_name[DAI_NAME_SIZE];
@@ -38,10 +35,10 @@ struct imx_tlv320aic3106_data {
 };
 
 //-------------------------------------------------------------------------------------------------
-static int imx_tlv320aic3106_dai_init(struct snd_soc_pcm_runtime *rtd)
+static int imx_vbase_dai_init(struct snd_soc_pcm_runtime *rtd)
 {
-  struct imx_tlv320aic3106_data *data = container_of(rtd->card,
-                                                     struct imx_tlv320aic3106_data,
+  struct imx_vbase_data *data = container_of(rtd->card,
+                                                     struct imx_vbase_data,
                                                      card);
   struct device *dev = rtd->card->dev;
   int ret;
@@ -56,7 +53,7 @@ static int imx_tlv320aic3106_dai_init(struct snd_soc_pcm_runtime *rtd)
 }
 
 //-------------------------------------------------------------------------------------------------
-static int imx_tlv320aic3106_audmux_config(struct platform_device *pdev)
+static int imx_vbase_audmux_config(struct platform_device *pdev)
 {
   struct device_node *np = pdev->dev.of_node;
   int int_port,
@@ -103,23 +100,23 @@ static int imx_tlv320aic3106_audmux_config(struct platform_device *pdev)
 }
 
 //-------------------------------------------------------------------------------------------------
-static const struct snd_soc_dapm_widget imx_tlv320aic3106_dapm_widgets[] = {
+static const struct snd_soc_dapm_widget imx_vbase_dapm_widgets[] = {
   SND_SOC_DAPM_HP("Headphone Jack", NULL),
   SND_SOC_DAPM_HP("Line In 1 Jack", NULL),
   SND_SOC_DAPM_HP("Line In 2 Jack", NULL),
 };
 
 //-------------------------------------------------------------------------------------------------
-static int imx_tlv320_probe(struct platform_device *pdev)
+static int imx_vbase_probe(struct platform_device *pdev)
 {
   struct device_node            *cpu_np,
                                 *codec_np;
   struct platform_device        *cpu_pdev;
   struct i2c_client             *codec_dev;
-  struct imx_tlv320aic3106_data *data;
+  struct imx_vbase_data         *data;
   int ret;
 
-	dev_err(&pdev->dev, "imx_tlv320_probe\n");
+	dev_err(&pdev->dev, "imx_vbase_probe\n");
 
   cpu_np   = of_parse_phandle(pdev->dev.of_node, "cpu-dai", 0);
   codec_np = of_parse_phandle(pdev->dev.of_node, "audio-codec", 0);
@@ -130,7 +127,7 @@ static int imx_tlv320_probe(struct platform_device *pdev)
   }
 
   if (strstr(cpu_np->name, "ssi")) {
-    ret = imx_tlv320aic3106_audmux_config(pdev);
+    ret = imx_vbase_audmux_config(pdev);
     if (ret)
       goto fail;
   }
@@ -169,11 +166,11 @@ static int imx_tlv320_probe(struct platform_device *pdev)
 
   data->dai.name              = "HiFi";
   data->dai.stream_name       = "HiFi";
-  data->dai.codec_dai_name    = "tlv320aic3x-hifi";
+  data->dai.codec_dai_name    = "vbase-hifi";
   data->dai.codec_of_node     = codec_np;
   data->dai.cpu_of_node       = cpu_np;
   data->dai.platform_of_node  = cpu_np;
-  data->dai.init              = &imx_tlv320aic3106_dai_init;
+  data->dai.init              = &imx_vbase_dai_init;
   data->dai.dai_fmt           = SND_SOC_DAIFMT_I2S;
   data->card.dev              = &pdev->dev;
 
@@ -181,15 +178,9 @@ static int imx_tlv320_probe(struct platform_device *pdev)
   if (ret)
     goto clk_fail;
 
-  ret = snd_soc_of_parse_audio_routing(&data->card, "audio-routing");
-  if (ret)
-    goto clk_fail;
-
   data->card.num_links        = 1;
   data->card.owner            = THIS_MODULE;
   data->card.dai_link         = &data->dai;
-  data->card.dapm_widgets     = imx_tlv320aic3106_dapm_widgets;
-  data->card.num_dapm_widgets = ARRAY_SIZE(imx_tlv320aic3106_dapm_widgets);
 
   ret = snd_soc_register_card(&data->card);
   if (ret) {
@@ -209,11 +200,11 @@ fail:
   return ret;
 }
 
-static int imx_tlv320_remove(struct platform_device *pdev)
+static int imx_vbase_remove(struct platform_device *pdev)
 {
-  struct imx_tlv320aic3106_data *data = platform_get_drvdata(pdev);
+  struct imx_vbase_data *data = platform_get_drvdata(pdev);
 
-  dev_err(&pdev->dev, "imx_tlv320_remove\n");
+  dev_err(&pdev->dev, "imx_vbase_remove\n");
 
   if (data->codec_clk) {
     clk_disable_unprepare(data->codec_clk);
@@ -225,24 +216,24 @@ static int imx_tlv320_remove(struct platform_device *pdev)
 }
 
 //-------------------------------------------------------------------------------------------------
-static const struct of_device_id imx_tlv320_dt_ids[] = {
-  { .compatible = "fsl,imx-audio-tlv320aic3106", },
+static const struct of_device_id imx_vbase_dt_ids[] = {
+  { .compatible = "fsl,imx-audio-vbase", },
   { /* sentinel */ }
 };
-MODULE_DEVICE_TABLE(of, imx_tlv320_dt_ids);
+MODULE_DEVICE_TABLE(of, imx_vbase_dt_ids);
 
-static struct platform_driver imx_tlv320_audio_driver = {
+static struct platform_driver imx_vbase_audio_driver = {
   .driver = {
-    .name           = "imx-tlv320aic3106",
+    .name           = "imx-vbase",
     .owner          = THIS_MODULE,
-    .of_match_table = imx_tlv320_dt_ids,
+    .of_match_table = imx_vbase_dt_ids,
   },
-  .probe  = imx_tlv320_probe,
-  .remove = imx_tlv320_remove,
+  .probe  = imx_vbase_probe,
+  .remove = imx_vbase_remove,
 };
-module_platform_driver(imx_tlv320_audio_driver);
+module_platform_driver(imx_vbase_audio_driver);
 
 MODULE_AUTHOR("Ivan Zaitsev <ivan.zaitsev@gmail.com>");
-MODULE_DESCRIPTION("iMX6 VLine TLV320AIC3106 ALSA SoC driver");
+MODULE_DESCRIPTION("iMX6 VBase ALSA SoC driver");
 MODULE_LICENSE("GPL");
-MODULE_ALIAS("platform:imx-tlv320aic3106");
+MODULE_ALIAS("platform:imx-vbase");

@@ -76,17 +76,11 @@
   };
 
   sound {
-    compatible      = "fsl,imx6q-vcore-lite-tlv320aic3106",
-                      "fsl,imx-audio-tlv320aic3106";
-    model           = "tlv320-audio";
+    compatible      = "fsl,imx6q-vcore-lite-vbase",
+                      "fsl,imx-audio-vbase";
+    model           = "vbase-audio";
     cpu-dai         = <&ssi2>;
     audio-codec     = <&codec>;
-    audio-routing   = "LINE1L", "Line In 1 Jack",
-                      "LINE1R", "Line In 1 Jack",
-                      "LINE2L", "Line In 2 Jack",
-                      "LINE2R", "Line In 2 Jack",
-                      "Headphone Jack", "HPLOUT",
-                      "Headphone Jack", "HPROUT";
     mux-int-port    = <2>;
     mux-ext-port    = <4>;
   };
@@ -153,15 +147,10 @@
   pinctrl-0       = <&pinctrl_i2c3_1>;
   status          = "okay";
 
-  codec: tlv320aic3x@18 {
-    compatible      = "ti,tlv320aic3x";
-    reg             = <0x18>;
+  codec: vbase@20 {
+    compatible      = "gromaudio,vbase";
+    reg             = <0x20>;
     clocks          = <&clks IMX6SL_CLK_EXTERN_AUDIO>;
-    ai3x-micbias-vg = <1>;
-    IOVDD-supply    = <&reg_3p3v>;
-    DVDD-supply     = <&reg_1p8v>;
-    AVDD-supply     = <&reg_3p3v>;
-    DRVDD-supply    = <&reg_3p3v>;
   };
 };
 
@@ -214,6 +203,7 @@
 				de-active       = <1>;
 				pixelclk-active = <0>;
 			};
+
       timing1: timing1 {
         clock-frequency = <33000000>;
         hactive         = <800>;
@@ -229,6 +219,7 @@
         de-active       = <1>;
         pixelclk-active = <1>;
       };
+
 		};
 	};
 };
@@ -242,11 +233,6 @@
 
 &pxp {
 	status = "okay";
-};
-
-&ssi2 {
-  fsl,mode = "i2s-slave";
-  status   = "okay";
 };
 
 &uart1 {

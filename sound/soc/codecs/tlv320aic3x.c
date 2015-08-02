@@ -1226,9 +1226,8 @@ static int aic3x_set_bias_level(struct snd_soc_codec *codec,
 	return 0;
 }
 
-#define AIC3X_RATES	SNDRV_PCM_RATE_8000_96000
-#define AIC3X_FORMATS	(SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S20_3LE | \
-			 SNDRV_PCM_FMTBIT_S24_3LE | SNDRV_PCM_FMTBIT_S32_LE)
+#define AIC3X_RATES		SNDRV_PCM_RATE_44100
+#define AIC3X_FORMATS	SNDRV_PCM_FMTBIT_S16_LE
 
 static const struct snd_soc_dai_ops aic3x_dai_ops = {
 	.hw_params	= aic3x_hw_params,
