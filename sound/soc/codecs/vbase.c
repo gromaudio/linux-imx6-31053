@@ -38,6 +38,8 @@ static int vbase_hw_params(struct snd_pcm_substream *substream,
 												   struct snd_pcm_hw_params *params,
 			   									 struct snd_soc_dai *dai)
 {
+  dev_err(dai->codec->dev, "hw_params: rate = %d, format = %08X\n", params_rate(params),
+                                                                    params_format(params));
 	return 0;
 }
 
@@ -69,19 +71,20 @@ static const struct snd_soc_dai_ops vbase_dai_ops = {
 };
 
 //-----------------------------------------------------------------------------
+#define SUPPORTED_SAMPLE_RATES ( SNDRV_PCM_RATE_44100 )
 static struct snd_soc_dai_driver vbase_dai = {
 	.name = "vbase-hifi",
 	.playback = {
 		.stream_name 	= "Playback",
 		.channels_min = 2,
 		.channels_max = 2,
-		.rates 				= SNDRV_PCM_RATE_44100,
+		.rates 				= SUPPORTED_SAMPLE_RATES,
 		.formats 			= SNDRV_PCM_FMTBIT_S16_LE},
 	.capture = {
 		.stream_name 	= "Capture",
 		.channels_min = 2,
 		.channels_max = 2,
-		.rates 				= SNDRV_PCM_RATE_44100,
+		.rates 				= SUPPORTED_SAMPLE_RATES,
 		.formats 			= SNDRV_PCM_FMTBIT_S16_LE},
 	.ops 						 = &vbase_dai_ops,
 	.symmetric_rates = 1,

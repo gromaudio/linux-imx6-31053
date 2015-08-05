@@ -174,7 +174,9 @@ static int imx_tlv320_probe(struct platform_device *pdev)
   data->dai.cpu_of_node       = cpu_np;
   data->dai.platform_of_node  = cpu_np;
   data->dai.init              = &imx_tlv320aic3106_dai_init;
-  data->dai.dai_fmt           = SND_SOC_DAIFMT_I2S;
+  data->dai.dai_fmt           = SND_SOC_DAIFMT_I2S |
+                                SND_SOC_DAIFMT_NB_NF |
+                                SND_SOC_DAIFMT_CBM_CFM;
   data->card.dev              = &pdev->dev;
 
   ret = snd_soc_of_parse_card_name(&data->card, "model");
