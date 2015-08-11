@@ -1366,7 +1366,9 @@ static int btusb_probe(struct usb_interface *intf,
 		/* Old firmware would otherwise let ath3k driver load
 		 * patch and sysconfig files */
 		if (le16_to_cpu(udev->descriptor.bcdDevice) <= 0x0001)
+		{
 			return -ENODEV;
+		}
 	}
 
 	data = devm_kzalloc(&intf->dev, sizeof(*data), GFP_KERNEL);
