@@ -453,6 +453,24 @@ next:
 		list_del(cam->ready_q.next);
 		list_add_tail(&ready_frame->queue, &cam->working_q);
 
+		while (true)
+		{
+			if (csi_read(cam->csi_soc, CSI_CSISR) & BIT_SOF_INT)
+			{
+				unsigned long val;
+
+				val = csi_read(cam->csi_soc, CSI_CSICR1);
+				csi_write(cam->csi_soc, val | BIT_CLR_RXFIFO, CSI_CSICR1);
+				while( csi_read(cam->csi_soc, CSI_CSICR1) & BIT_CLR_RXFIFO);
+
+				val = csi_read(cam->csi_soc, CSI_CSICR3);
+				csi_write(cam->csi_soc, val | BIT_DMA_REFLASH_RFF, CSI_CSICR3);
+				while( csi_read(cam->csi_soc, CSI_CSICR3) & BIT_DMA_REFLASH_RFF);
+
+				break;
+			}
+		}
+
 		csi_write(cam->csi_soc, ready_frame->paddress,
 			cam->ping_pong_csi == 1 ? CSI_CSIDMASA_FB1 :
 						  CSI_CSIDMASA_FB2);
@@ -629,14 +647,14 @@ static int csi_v4l2_prepare_bufs(cam_data *cam, struct v4l2_buffer *buf)
 		return -EINVAL;
 	}
 
-	cam->frame[buf->index].buffer.index = buf->index;
-	cam->frame[buf->index].buffer.flags = V4L2_BUF_FLAG_MAPPED;
-	cam->frame[buf->index].buffer.length = buf->length;
-	cam->frame[buf->index].buffer.m.offset = cam->frame[buf->index].paddress
-		= buf->m.offset;
-	cam->frame[buf->index].buffer.type = buf->type;
-	cam->frame[buf->index].buffer.memory = V4L2_MEMORY_USERPTR;
-	cam->frame[buf->index].index = buf->index;
+	cam->frame[buf->index].buffer.index 		= buf->index;
+	cam->frame[buf->index].buffer.flags 		= V4L2_BUF_FLAG_MAPPED;
+	cam->frame[buf->index].buffer.length 		= buf->length;
+	cam->frame[buf->index].buffer.m.offset 	=
+	cam->frame[buf->index].paddress 				= buf->m.offset;
+	cam->frame[buf->index].buffer.type 			= buf->type;
+	cam->frame[buf->index].buffer.memory 		= V4L2_MEMORY_USERPTR;
+	cam->frame[buf->index].index 						= buf->index;
 
 	return 0;
 }
@@ -1041,7 +1059,7 @@ static int csi_v4l2_s_param(cam_data *cam, struct v4l2_streamparm *parm)
 	int err = 0;
 	int size = 0;
 
-	pr_debug("In %s\n", __func__);
+	pr_err("In %s\n", __func__);
 
 	if (parm->type != V4L2_BUF_TYPE_VIDEO_CAPTURE) {
 		pr_err(KERN_ERR "%s invalid type\n", __func__);
@@ -1092,16 +1110,24 @@ static int csi_v4l2_s_param(cam_data *cam, struct v4l2_streamparm *parm)
 		csi_set_32bit_imagpara(cam,
 				       f->fmt.pix.width,
 				       f->fmt.pix.height);
+
+	case V4L2_PIX_FMT_RGB32:
+		size = f->fmt.pix.width * f->fmt.pix.height * 4;
+		csi_set_16bit_imagpara(cam,
+				       f->fmt.pix.width,
+				       f->fmt.pix.height);
+		break;
+
 		break;
 	case V4L2_PIX_FMT_UYVY:
 		size = f->fmt.pix.width * f->fmt.pix.height * 2;
-		csi_set_16bit_imagpara(cam,
+		csi_set_32bit_imagpara(cam,
 				       f->fmt.pix.width,
 				       f->fmt.pix.height);
 		break;
 	case V4L2_PIX_FMT_YUYV:
 		size = f->fmt.pix.width * f->fmt.pix.height * 2;
-		csi_set_16bit_imagpara(cam,
+		csi_set_32bit_imagpara(cam,
 				       f->fmt.pix.width,
 				       f->fmt.pix.height);
 		break;
@@ -1115,7 +1141,6 @@ static int csi_v4l2_s_param(cam_data *cam, struct v4l2_streamparm *parm)
 	case V4L2_PIX_FMT_RGB24:
 	case V4L2_PIX_FMT_BGR24:
 	case V4L2_PIX_FMT_BGR32:
-	case V4L2_PIX_FMT_RGB32:
 	case V4L2_PIX_FMT_NV12:
 	default:
 		pr_debug("   case not supported\n");
@@ -1438,7 +1463,7 @@ static int csi_v4l_close(struct file *file)
 	cam_data *cam = video_get_drvdata(dev);
 	struct sensor_data *sensor;
 
-	pr_debug("In MVC:%s\n", __func__);
+	pr_err("In MVC:%s\n", __func__);
 
 	if (!cam) {
 		pr_err("%s: Internal error, cam_data not found!\n", __func__);
@@ -1455,6 +1480,8 @@ static int csi_v4l_close(struct file *file)
 		pr_err("%s: Internal error, sensor_data is not found!\n", __func__);
 		return -EBADF;
 	}
+
+	csi_streamoff(cam);
 
 	/* for the case somebody hit the ctrl C */
 	if (cam->overlay_pid == current->pid) {
@@ -1759,17 +1786,12 @@ static long csi_v4l_do_ioctl(struct file *file,
 
 	case VIDIOC_QUERYBUF: {
 		struct v4l2_buffer *buf = arg;
-		int index = buf->index;
+
 		pr_debug("   case VIDIOC_QUERYBUF\n");
 
 		if (buf->type != V4L2_BUF_TYPE_VIDEO_CAPTURE) {
 			retval = -EINVAL;
 			break;
-		}
-
-		if (buf->memory & V4L2_MEMORY_MMAP) {
-			memset(buf, 0, sizeof(buf));
-			buf->index = index;
 		}
 
 		down(&cam->param_lock);
@@ -1788,6 +1810,19 @@ static long csi_v4l_do_ioctl(struct file *file,
 		int index = buf->index;
 		pr_debug("   case VIDIOC_QBUF\n");
 
+/*
+{
+int val;
+
+val = csi_read(cam->csi_soc, CSI_CSISR);
+csi_write(cam->csi_soc, val | BIT_SOF_INT, CSI_CSISR);
+while(!csi_read(cam->csi_soc, CSI_CSISR) & BIT_SOF_INT);
+
+val = csi_read(cam->csi_soc, CSI_CSICR3);
+csi_write(cam->csi_soc, val | BIT_DMA_REFLASH_RFF, CSI_CSICR3);
+while(csi_read(cam->csi_soc, CSI_CSICR3) & BIT_DMA_REFLASH_RFF);
+}
+*/
 		spin_lock_irqsave(&cam->queue_int_lock, lock_flags);
 		cam->frame[index].buffer.m.offset = buf->m.offset;
 		if ((cam->frame[index].buffer.flags & 0x7) ==

@@ -56,6 +56,12 @@
     default-brightness-level = <6>;
   };
 
+  csi_v4l2_cap {
+    compatible  = "fsl,imx6sl-csi-v4l2";
+    csi_id      = <0>;
+    status      = "okay";
+  };
+
   ramoops_device {
     compatible   = "fsl,mxc_ramoops";
     record_size  = <524288>;  /*512K*/
@@ -98,9 +104,7 @@
 };
 
 &csi1 {
-  pinctrl-names = "default";
-  pinctrl-0     = <&pinctrl_csi_1>;
-  status        = "disabled";
+  status        = "okay";
 };
 
 &ecspi3 {
@@ -151,6 +155,18 @@
     compatible      = "gromaudio,vbase";
     reg             = <0x20>;
     clocks          = <&clks IMX6SL_CLK_EXTERN_AUDIO>;
+  };
+
+  camera: vbase@09 {
+    compatible      = "gromaudio,vbase camera";
+    reg             = <0x09>;
+    pinctrl-names   = "default";
+    pinctrl-0       = <&pinctrl_csi_1>;
+    clocks          = <&clks IMX6SL_CLK_CSI>;
+    clock-names     = "csi_mclk";
+    csi_id          = <0>;
+    mclk            = <24000000>;
+    mclk_source     = <0>;
   };
 };
 
@@ -203,7 +219,7 @@
 				de-active       = <1>;
 				pixelclk-active = <0>;
 			};
-
+/*
       timing1: timing1 {
         clock-frequency = <33000000>;
         hactive         = <800>;
@@ -219,7 +235,7 @@
         de-active       = <1>;
         pixelclk-active = <1>;
       };
-
+*/
 		};
 	};
 };

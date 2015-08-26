@@ -141,6 +141,10 @@ static irqreturn_t csi_irq_handler(int irq, void *data)
 		}
 	}
 
+	if (status & BIT_SOF_INT) {
+		cam->enc_callback(1,cam);
+	}
+
 	if (g_callback)
 		g_callback(g_callback_data, status);
 
@@ -209,16 +213,17 @@ static void csi_init_interface(struct csi_soc *csi)
 	val |= BIT_REDGE;
 	val |= BIT_GCLK_MODE;
 	val |= BIT_HSYNC_POL;
-	val |= BIT_FCC;
-	val |= 1 << SHIFT_MCLKDIV;
-	val |= BIT_MCLKEN;
+//	val |= BIT_FCC;
+//	val |= 1 << SHIFT_MCLKDIV;
+//	val |= BIT_MCLKEN;
 	__raw_writel(val, csi->regbase + CSI_CSICR1);
 
-	imag_para = (640 << 16) | 960;
+	imag_para = (720 << 16) | 480;
 	__raw_writel(imag_para, csi->regbase + CSI_CSIIMAG_PARA);
 
 	val = 0x1010;
 	val |= BIT_DMA_REFLASH_RFF;
+	val |= BIT_TWO_8BIT_SENSOR;
 	__raw_writel(val, csi->regbase + CSI_CSICR3);
 }
 
