@@ -214,7 +214,7 @@ static void csi_init_interface(struct csi_soc *csi)
 	val |= BIT_MCLKEN;
 	__raw_writel(val, csi->regbase + CSI_CSICR1);
 
-	imag_para = (640 << 16) | 960;
+	imag_para = (720 << 16) | 480;
 	__raw_writel(imag_para, csi->regbase + CSI_CSIIMAG_PARA);
 
 	val = 0x1010;

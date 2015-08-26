@@ -1041,7 +1041,7 @@ static int csi_v4l2_s_param(cam_data *cam, struct v4l2_streamparm *parm)
 	int err = 0;
 	int size = 0;
 
-	pr_debug("In %s\n", __func__);
+	pr_err("In %s\n", __func__);
 
 	if (parm->type != V4L2_BUF_TYPE_VIDEO_CAPTURE) {
 		pr_err(KERN_ERR "%s invalid type\n", __func__);
