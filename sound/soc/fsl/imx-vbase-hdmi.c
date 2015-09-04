@@ -1,5 +1,5 @@
 /*
- * sound/soc/imx/imx-vbase.c --  SoC audio for iMX6 VBase board.
+ * SoC audio using SSI in I2S mode.
  *
  * Authors: Ivan Zaitsev, <ivan.zaitsev@gmail.com>
  *
@@ -21,11 +21,12 @@
 #include <sound/soc.h>
 #include "imx-audmux.h"
 
+
 //-------------------------------------------------------------------------------------------------
 #define DAI_NAME_SIZE 32
 
 //-------------------------------------------------------------------------------------------------
-struct imx_vbase_data {
+struct imx_hdmi_data {
   struct        snd_soc_dai_link dai;
   struct        snd_soc_card card;
   char          codec_dai_name[DAI_NAME_SIZE];
@@ -35,11 +36,11 @@ struct imx_vbase_data {
 };
 
 //-------------------------------------------------------------------------------------------------
-static int imx_vbase_dai_init(struct snd_soc_pcm_runtime *rtd)
+static int imx_vbase_hdmi_dai_init(struct snd_soc_pcm_runtime *rtd)
 {
-  struct imx_vbase_data *data = container_of(rtd->card,
-                                             struct imx_vbase_data,
-                                             card);
+  struct imx_hdmi_data *data = container_of(rtd->card,
+                                           struct imx_hdmi_data,
+                                           card);
   struct device *dev = rtd->card->dev;
   int ret;
 
@@ -53,7 +54,7 @@ static int imx_vbase_dai_init(struct snd_soc_pcm_runtime *rtd)
 }
 
 //-------------------------------------------------------------------------------------------------
-static int imx_vbase_audmux_config(struct platform_device *pdev)
+static int imx_vbase_hdmi_audmux_config(struct platform_device *pdev)
 {
   struct device_node *np = pdev->dev.of_node;
   int int_port,
@@ -65,6 +66,7 @@ static int imx_vbase_audmux_config(struct platform_device *pdev)
     dev_err(&pdev->dev, "mux-int-port missing or invalid\n");
     return ret;
   }
+
   ret = of_property_read_u32(np, "mux-ext-port", &ext_port);
   if (ret) {
     dev_err(&pdev->dev, "mux-ext-port missing or invalid\n");
@@ -77,20 +79,21 @@ static int imx_vbase_audmux_config(struct platform_device *pdev)
    */
   int_port--;
   ext_port--;
-  ret = imx_audmux_v2_configure_port(int_port,
-      IMX_AUDMUX_V2_PTCR_SYN |
-      IMX_AUDMUX_V2_PTCR_TFSEL(ext_port) |
-      IMX_AUDMUX_V2_PTCR_TCSEL(ext_port) |
-      IMX_AUDMUX_V2_PTCR_TFSDIR |
-      IMX_AUDMUX_V2_PTCR_TCLKDIR,
-      IMX_AUDMUX_V2_PDCR_RXDSEL(ext_port));
+  ret = imx_audmux_v2_configure_port( int_port,
+                                      IMX_AUDMUX_V2_PTCR_SYN |
+                                      IMX_AUDMUX_V2_PTCR_TFSEL(ext_port | 0x8) |
+                                      IMX_AUDMUX_V2_PTCR_TCSEL(ext_port | 0x8) |
+                                      IMX_AUDMUX_V2_PTCR_TFSDIR |
+                                      IMX_AUDMUX_V2_PTCR_TCLKDIR,
+                                      IMX_AUDMUX_V2_PDCR_RXDSEL(ext_port));
   if (ret) {
     dev_err(&pdev->dev, "audmux internal port setup failed\n");
     return ret;
   }
-  ret = imx_audmux_v2_configure_port(ext_port,
-      IMX_AUDMUX_V2_PTCR_SYN,
-      IMX_AUDMUX_V2_PDCR_RXDSEL(int_port));
+
+  ret = imx_audmux_v2_configure_port( ext_port,
+                                      IMX_AUDMUX_V2_PTCR_SYN,
+                                      IMX_AUDMUX_V2_PDCR_RXDSEL(int_port));
   if (ret) {
     dev_err(&pdev->dev, "audmux external port setup failed\n");
     return ret;
@@ -100,16 +103,15 @@ static int imx_vbase_audmux_config(struct platform_device *pdev)
 }
 
 //-------------------------------------------------------------------------------------------------
-static int imx_vbase_probe(struct platform_device *pdev)
+static int imx_vbase_hdmi_probe(struct platform_device *pdev)
 {
   struct device_node            *cpu_np,
                                 *codec_np;
-  struct platform_device        *cpu_pdev;
-  struct i2c_client             *codec_dev;
-  struct imx_vbase_data         *data;
+  struct platform_device        *codec_pdev;
+  struct imx_hdmi_data           *data;
   int ret;
 
-	dev_dbg(&pdev->dev, "%s\n", __func__);
+  dev_err(&pdev->dev, "%s\n", __func__);
 
   cpu_np   = of_parse_phandle(pdev->dev.of_node, "cpu-dai", 0);
   codec_np = of_parse_phandle(pdev->dev.of_node, "audio-codec", 0);
@@ -120,19 +122,13 @@ static int imx_vbase_probe(struct platform_device *pdev)
   }
 
   if (strstr(cpu_np->name, "ssi")) {
-    ret = imx_vbase_audmux_config(pdev);
+    ret = imx_vbase_hdmi_audmux_config(pdev);
     if (ret)
       goto fail;
   }
 
-  cpu_pdev = of_find_device_by_node(cpu_np);
-  if (!cpu_pdev) {
-    dev_err(&pdev->dev, "failed to find SSI platform device\n");
-    ret = -EINVAL;
-    goto fail;
-  }
-  codec_dev = of_find_i2c_device_by_node(codec_np);
-  if (!codec_dev) {
+  codec_pdev = of_find_device_by_node(codec_np);
+  if (!codec_pdev) {
     dev_err(&pdev->dev, "failed to find codec platform device\n");
     return -EINVAL;
   }
@@ -143,13 +139,13 @@ static int imx_vbase_probe(struct platform_device *pdev)
     goto fail;
   }
 
-  data->codec_clk = clk_get(&codec_dev->dev, NULL);
+  data->codec_clk = clk_get(&codec_pdev->dev, NULL);
   if (IS_ERR(data->codec_clk)) {
     /* assuming clock enabled by default */
     data->codec_clk = NULL;
     ret = of_property_read_u32(codec_np, "clock-frequency", &data->clk_frequency);
     if (ret) {
-      dev_err(&codec_dev->dev, "clock-frequency missing or invalid\n");
+      dev_err(&codec_pdev->dev, "clock-frequency missing or invalid\n");
       goto fail;
     }
   } else {
@@ -157,13 +153,13 @@ static int imx_vbase_probe(struct platform_device *pdev)
     clk_prepare_enable(data->codec_clk);
   }
 
-  data->dai.name              = "HiFi";
-  data->dai.stream_name       = "HiFi";
-  data->dai.codec_dai_name    = "vbase-hifi";
+  data->dai.name              = "HDMI IN";
+  data->dai.stream_name       = "HDMI IN";
+  data->dai.codec_dai_name    = "hdmi-in";
   data->dai.codec_of_node     = codec_np;
   data->dai.cpu_of_node       = cpu_np;
   data->dai.platform_of_node  = cpu_np;
-  data->dai.init              = &imx_vbase_dai_init;
+  data->dai.init              = &imx_vbase_hdmi_dai_init;
   data->dai.dai_fmt           = SND_SOC_DAIFMT_I2S;
   data->card.dev              = &pdev->dev;
 
@@ -182,6 +178,7 @@ static int imx_vbase_probe(struct platform_device *pdev)
   }
 
   platform_set_drvdata(pdev, data);
+
 clk_fail:
   clk_put(data->codec_clk);
 fail:
@@ -193,40 +190,33 @@ fail:
   return ret;
 }
 
-static int imx_vbase_remove(struct platform_device *pdev)
+static int imx_vbase_hdmi_remove(struct platform_device *pdev)
 {
-  struct imx_vbase_data *data = platform_get_drvdata(pdev);
+  struct imx_hdmi_data *data = platform_get_drvdata(pdev);
 
-  dev_dbg(&pdev->dev, "%s\n", __func__);
+  dev_err(&pdev->dev, "%s\n", __func__);
 
-  if (data->codec_clk) {
-    clk_disable_unprepare(data->codec_clk);
-    clk_put(data->codec_clk);
-  }
   snd_soc_unregister_card(&data->card);
-
-	return 0;
+  return 0;
 }
 
-//-------------------------------------------------------------------------------------------------
-static const struct of_device_id imx_vbase_dt_ids[] = {
-  { .compatible = "fsl,imx-audio-vbase", },
-  { /* sentinel */ }
+static const struct of_device_id imx_vbase_hdmi_dt_ids[] = {
+  { .compatible = "fsl,imx-audio-vbase-hdmi", },
+  {}
 };
-MODULE_DEVICE_TABLE(of, imx_vbase_dt_ids);
+MODULE_DEVICE_TABLE(of, imx_vbase_hdmi_dt_ids);
 
-static struct platform_driver imx_vbase_audio_driver = {
+static struct platform_driver imx_vbase_hdmi_audio_driver = {
   .driver = {
-    .name           = "imx-vbase",
+    .name           = "imx-vbase-hdmi",
     .owner          = THIS_MODULE,
-    .of_match_table = imx_vbase_dt_ids,
+    .of_match_table = imx_vbase_hdmi_dt_ids,
   },
-  .probe  = imx_vbase_probe,
-  .remove = imx_vbase_remove,
+  .probe  = imx_vbase_hdmi_probe,
+  .remove = imx_vbase_hdmi_remove,
 };
-module_platform_driver(imx_vbase_audio_driver);
+module_platform_driver(imx_vbase_hdmi_audio_driver);
 
 MODULE_AUTHOR("Ivan Zaitsev <ivan.zaitsev@gmail.com>");
-MODULE_DESCRIPTION("iMX6 VBase ALSA SoC driver");
+MODULE_DESCRIPTION("iMX HDMI IN SoC driver");
 MODULE_LICENSE("GPL");
-MODULE_ALIAS("platform:imx-vbase");

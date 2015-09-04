@@ -1,5 +1,5 @@
 /*
- * ALSA SoC VBase codec driver
+ * VBase audio codec driver
  *
  * Author:      Ivan Zaitsev, <ivan.zaitsev@gmail.com>
  * Copyright:   (C) 2015 X-Media tech, Inc.,
@@ -38,8 +38,8 @@ static int vbase_hw_params(struct snd_pcm_substream *substream,
 												   struct snd_pcm_hw_params *params,
 			   									 struct snd_soc_dai *dai)
 {
-  dev_err(dai->codec->dev, "hw_params: rate = %d, format = %08X\n", params_rate(params),
-                                                                    params_format(params));
+  dev_dbg(dai->codec->dev, "hw_params: rate = %d, format = %08X\n", params_rate(params),
+                                                                      params_format(params));
 	return 0;
 }
 
@@ -90,21 +90,8 @@ static struct snd_soc_dai_driver vbase_dai = {
 	.symmetric_rates = 1,
 };
 
-static int vbase_suspend(struct snd_soc_codec *codec)
-{
-	return 0;
-}
-
-static int vbase_resume(struct snd_soc_codec *codec)
-{
-	return 0;
-}
-
 static int vbase_probe(struct snd_soc_codec *codec)
 {
-	struct vbase_priv *vbase = snd_soc_codec_get_drvdata(codec);
-
-	vbase->codec = codec;
 	return 0;
 }
 
@@ -117,8 +104,6 @@ static int vbase_remove(struct snd_soc_codec *codec)
 static struct snd_soc_codec_driver soc_codec_dev_vbase = {
 	.probe             = vbase_probe,
 	.remove            = vbase_remove,
-	.suspend           = vbase_suspend,
-	.resume            = vbase_resume,
 };
 
 
@@ -135,7 +120,7 @@ static int vbase_i2c_probe(	struct i2c_client *i2c,
 	struct vbase_priv *vbase;
 	int ret;
 
-	dev_err(&i2c->dev, "vbase_i2c_probe: 0x%08x\n", (u32)i2c->dev.of_node);
+	dev_dbg(&i2c->dev, "%s: 0x%08x\n", __func__, (u32)i2c->dev.of_node);
 
 	vbase = devm_kzalloc(&i2c->dev, sizeof(struct vbase_priv), GFP_KERNEL);
 	if (vbase == NULL) {
@@ -153,7 +138,7 @@ static int vbase_i2c_probe(	struct i2c_client *i2c,
 
 static int vbase_i2c_remove(struct i2c_client *client)
 {
-	dev_err(&client->dev, "vbase_i2c_remove\n");
+	dev_dbg(&client->dev, "%s\n", __func__);
 	snd_soc_unregister_codec(&client->dev);
 	return 0;
 }

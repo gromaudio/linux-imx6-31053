@@ -81,20 +81,41 @@
     };
   };
 
+  codec_hdmi: hdmi {
+    compatible = "gromaudio,vbase-hdmi";
+    clocks     = <&clks IMX6SL_CLK_EXTERN_AUDIO>;
+    status     = "okay";
+  };
+
   sound {
     compatible      = "fsl,imx6q-vcore-lite-vbase",
                       "fsl,imx-audio-vbase";
     model           = "vbase-audio";
-    cpu-dai         = <&ssi2>;
-    audio-codec     = <&codec>;
-    mux-int-port    = <2>;
+    cpu-dai         = <&ssi1>;
+    audio-codec     = <&codec_vbase>;
+    mux-int-port    = <1>;
     mux-ext-port    = <4>;
+  };
+
+  sound-hdmi {
+    compatible      = "fsl,imx6q-vcore-lite-vbase",
+                      "fsl,imx-audio-vbase-hdmi";
+    model           = "hdmi-audio";
+    cpu-dai         = <&ssi2>;
+    audio-codec     = <&codec_hdmi>;
+    mux-int-port    = <2>;
+    mux-ext-port    = <3>;
   };
 };
 
 &audmux {
   pinctrl-names = "default";
   pinctrl-0     = <&pinctrl_audmux_2>;
+  status        = "okay";
+};
+
+&ssi1 {
+  fsl,mode      = "i2s-slave";
   status        = "okay";
 };
 
@@ -151,7 +172,7 @@
   pinctrl-0       = <&pinctrl_i2c3_1>;
   status          = "okay";
 
-  codec: vbase@20 {
+  codec_vbase: vbase@20 {
     compatible      = "gromaudio,vbase";
     reg             = <0x20>;
     clocks          = <&clks IMX6SL_CLK_EXTERN_AUDIO>;

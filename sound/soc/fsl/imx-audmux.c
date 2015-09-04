@@ -236,6 +236,9 @@ int imx_audmux_v2_configure_port(unsigned int port, unsigned int ptcr,
 	if (audmux_clk)
 		clk_prepare_enable(audmux_clk);
 
+pr_err("PTCR: off= %04X, %08X. PDCR: off= %04X, %08X\n", IMX_AUDMUX_V2_PTCR(port), ptcr,
+																												 IMX_AUDMUX_V2_PDCR(port), pdcr);
+
 	writel(ptcr, audmux_base + IMX_AUDMUX_V2_PTCR(port));
 	writel(pdcr, audmux_base + IMX_AUDMUX_V2_PDCR(port));
 
