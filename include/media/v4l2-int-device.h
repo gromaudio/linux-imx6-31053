@@ -178,7 +178,8 @@ enum v4l2_int_ioctl_num {
 	 * "Proper" V4L ioctls, as in struct video_device.
 	 *
 	 */
-	vidioc_int_enum_fmt_cap_num = 1,
+	vidioc_int_enum_input_num = 1,
+	vidioc_int_enum_fmt_cap_num,
 	vidioc_int_g_fmt_cap_num,
 	vidioc_int_s_fmt_cap_num,
 	vidioc_int_try_fmt_cap_num,
@@ -283,6 +284,7 @@ enum v4l2_int_ioctl_num {
 		return desc;						\
 	}
 
+V4L2_INT_WRAPPER_1(enum_input, struct v4l2_input, *);
 V4L2_INT_WRAPPER_1(enum_fmt_cap, struct v4l2_fmtdesc, *);
 V4L2_INT_WRAPPER_1(g_fmt_cap, struct v4l2_format, *);
 V4L2_INT_WRAPPER_1(s_fmt_cap, struct v4l2_format, *);

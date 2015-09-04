@@ -247,6 +247,29 @@ static int ioctl_enum_fmt_cap( struct v4l2_int_device *s,
 }
 
 /*
+ * ioctl_enum_input - V4L2 sensor interface handler for VIDIOC_ENUM_INPUT
+ * @s: pointer to standard V4L2 device structure
+ * @fmt: pointer to standard V4L2 input description structure
+ *
+ * Return 0.
+ */
+static int ioctl_enum_input( struct v4l2_int_device *s,
+                             struct v4l2_input *input)
+{
+  pr_debug("%s\n", __func__);
+
+  if( input->index < num_of_inputs )
+  {
+    memset( input->name, 0, 32);
+    strncpy(input->name, video_input_array[ input->index ].name, 31);
+    input->audioset = video_input_array[ input->index ].audiosamplerate;
+    return 0;
+  }
+
+  return -EINVAL;
+}
+
+/*
  * ioctl_enum_framesizes - V4L2 sensor interface handler for
  *         VIDIOC_ENUM_FRAMESIZES ioctl
  * @s: pointer to standard V4L2 device structure
@@ -459,6 +482,7 @@ static struct v4l2_int_ioctl_desc vbase_ioctl_desc[] = {
   {vidioc_int_s_power_num,          (v4l2_int_ioctl_func *)ioctl_s_power},
   {vidioc_int_g_ifparm_num,         (v4l2_int_ioctl_func *)ioctl_g_ifparm},
   {vidioc_int_init_num,             (v4l2_int_ioctl_func *)ioctl_init},
+  {vidioc_int_enum_input_num,       (v4l2_int_ioctl_func *)ioctl_enum_input},
   {vidioc_int_enum_fmt_cap_num,     (v4l2_int_ioctl_func *)ioctl_enum_fmt_cap},
   {vidioc_int_g_fmt_cap_num,        (v4l2_int_ioctl_func *)ioctl_g_fmt_cap},
   {vidioc_int_g_parm_num,           (v4l2_int_ioctl_func *)ioctl_g_parm},

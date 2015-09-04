@@ -1073,6 +1073,18 @@ static long csi_v4l_do_ioctl(struct file *file,
     retval = csi_streamoff(cam);
     break;
   }
+
+  case VIDIOC_ENUMINPUT: {
+    struct v4l2_input *input = arg;
+    if (cam->sensor)
+      retval = vidioc_int_enum_input(cam->sensor, input);
+    else {
+      pr_err("ERROR: v4l2 capture: slave not found!\n");
+      retval = -ENODEV;
+    }
+    break;
+  }
+
   case VIDIOC_ENUM_FMT: {
     struct v4l2_fmtdesc *fmt = arg;
     if (cam->sensor)
@@ -1121,7 +1133,6 @@ static long csi_v4l_do_ioctl(struct file *file,
   case VIDIOC_S_CROP:
   case VIDIOC_G_CROP:
   case VIDIOC_OVERLAY:
-  case VIDIOC_ENUMINPUT:
   case VIDIOC_G_INPUT:
   case VIDIOC_S_INPUT:
   case VIDIOC_G_STD:
