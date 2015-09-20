@@ -119,6 +119,11 @@ int usb_choose_configuration(struct usb_device *udev)
 #endif
 		}
 
+		/* skip first configuration for Apple devices. */
+		else if ( i == 0 && num_configs > 1 &&
+							udev->descriptor.idVendor == 0x05ac )
+			continue;
+
 		/* From the remaining configs, choose the first one whose
 		 * first interface is for a non-vendor-specific class.
 		 * Reason: Linux is more likely to have a class driver
