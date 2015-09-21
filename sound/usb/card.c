@@ -85,6 +85,7 @@ static int nrpacks = 8;		/* max. number of packets per urb */
 static int device_setup[SNDRV_CARDS]; /* device parameter for this card */
 static bool ignore_ctl_error;
 static bool autoclock = true;
+static char switch_name[25];
 
 module_param_array(index, int, NULL, 0444);
 MODULE_PARM_DESC(index, "Index value for the USB audio adapter.");
@@ -646,8 +647,10 @@ static int usb_audio_probe(struct usb_interface *intf,
 	struct snd_usb_stream *as;
 	struct snd_usb_substream *subs;
 	struct list_head *head;
+	struct usb_device *device;
 	int state = 0;
 
+	device = interface_to_usbdev(intf);
 	chip = snd_usb_audio_probe(interface_to_usbdev(intf), intf, id);
 	if (chip) {
 		usb_set_intfdata(intf, chip);
@@ -655,7 +658,14 @@ static int usb_audio_probe(struct usb_interface *intf,
 		switch_data = kzalloc(sizeof(struct usb_audio_switch_data), GFP_KERNEL);
 		if (!switch_data)
 			return -ENOMEM;
-		switch_data->sdev.name = "usb_audio";
+
+		if (device) {
+			memset(switch_name, 0, sizeof(switch_name));
+			snprintf(switch_name, sizeof(switch_name), "usb_audio_%04X", device->descriptor.idVendor);
+			switch_data->sdev.name = switch_name;
+		} else {
+			switch_data->sdev.name = "usb_audio";
+		}
 		ret = switch_dev_register(&switch_data->sdev);
 		if (ret < 0)
 			goto err_switch_dev_register;
