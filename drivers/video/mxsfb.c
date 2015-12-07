@@ -332,7 +332,7 @@ static const struct fb_bitfield def_rgb666[] = {
 
 static const struct fb_bitfield def_rgb888[] = {
 	[RED] = {
-		.offset = 16,
+		.offset = 0,
 		.length = 8,
 	},
 	[GREEN] = {
@@ -340,7 +340,7 @@ static const struct fb_bitfield def_rgb888[] = {
 		.length = 8,
 	},
 	[BLUE] = {
-		.offset = 0,
+		.offset = 16,
 		.length = 8,
 	},
 	[TRANSP] = {	/* no support for transparency */
