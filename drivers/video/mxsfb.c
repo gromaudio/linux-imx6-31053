@@ -215,6 +215,8 @@ struct mxsfb_info {
 	struct fb_var_screeninfo var;
 };
 
+char cmd_line_mode_name[16] = {0};
+
 #define mxsfb_is_v3(host) (host->devdata->ipversion == 3)
 #define mxsfb_is_v4(host) (host->devdata->ipversion == 4)
 
@@ -351,11 +353,11 @@ static const struct fb_bitfield def_rgb888[] = {
 #define bitfield_is_equal(f1, f2)  (!memcmp(&(f1), &(f2), sizeof(f1)))
 
 static inline bool pixfmt_is_equal(struct fb_var_screeninfo *var,
-				   const struct fb_bitfield *f)
+					 const struct fb_bitfield *f)
 {
 	if (bitfield_is_equal(var->red, f[RED]) &&
-	    bitfield_is_equal(var->green, f[GREEN]) &&
-	    bitfield_is_equal(var->blue, f[BLUE]))
+			bitfield_is_equal(var->green, f[GREEN]) &&
+			bitfield_is_equal(var->blue, f[BLUE]))
 		return true;
 
 	return false;
@@ -376,7 +378,7 @@ static irqreturn_t mxsfb_irq_handler(int irq, void *dev_id)
 	if ((status_lcd & CTRL1_VSYNC_EDGE_IRQ) &&
 		host->wait4vsync) {
 		writel(CTRL1_VSYNC_EDGE_IRQ_EN,
-			     host->base + LCDC_CTRL1 + REG_CLR);
+					 host->base + LCDC_CTRL1 + REG_CLR);
 		host->wait4vsync = 0;
 		host->vsync_nf_timestamp = ktime_get();
 		complete(&host->vsync_complete);
@@ -384,18 +386,18 @@ static irqreturn_t mxsfb_irq_handler(int irq, void *dev_id)
 
 	if (status_lcd & CTRL1_CUR_FRAME_DONE_IRQ) {
 		writel(CTRL1_CUR_FRAME_DONE_IRQ_EN,
-			     host->base + LCDC_CTRL1 + REG_CLR);
+					 host->base + LCDC_CTRL1 + REG_CLR);
 		up(&host->flip_sem);
 	}
 
 	if (status_lcd & CTRL1_UNDERFLOW_IRQ) {
 		writel(CTRL1_UNDERFLOW_IRQ,
-			     host->base + LCDC_CTRL1 + REG_CLR);
+					 host->base + LCDC_CTRL1 + REG_CLR);
 	}
 
 	if (status_lcd & CTRL1_OVERFLOW_IRQ) {
 		writel(CTRL1_OVERFLOW_IRQ,
-			     host->base + LCDC_CTRL1 + REG_CLR);
+					 host->base + LCDC_CTRL1 + REG_CLR);
 	}
 	return IRQ_HANDLED;
 }
@@ -501,7 +503,7 @@ static void mxsfb_enable_controller(struct fb_info *fb_info)
 
 	clk_set_rate(host->clk_pix, PICOS2KHZ(fb_info->var.pixclock) * 1000U);
 	ret =
-	    clk_set_rate(host->clk_pix,
+			clk_set_rate(host->clk_pix,
 			 PICOS2KHZ(fb_info->var.pixclock) * 1000U);
 	if (ret) {
 		dev_err(&host->pdev->dev,
@@ -602,9 +604,9 @@ static void mxsfb_disable_controller(struct fb_info *fb_info)
 }
 
 /**
-   This function compare the fb parameter see whether it was different
-   parameter for hardware, if it was different parameter, the hardware
-   will reinitialize. All will compared except x/y offset.
+	 This function compare the fb parameter see whether it was different
+	 parameter for hardware, if it was different parameter, the hardware
+	 will reinitialize. All will compared except x/y offset.
  */
 static bool mxsfb_par_equal(struct fb_info *fbi, struct mxsfb_info *host)
 {
@@ -614,7 +616,7 @@ static bool mxsfb_par_equal(struct fb_info *fbi, struct mxsfb_info *host)
 	struct fb_var_screeninfo newvar = fbi->var;
 
 	if ((fbi->var.activate & FB_ACTIVATE_MASK) == FB_ACTIVATE_NOW &&
-	    fbi->var.activate & FB_ACTIVATE_FORCE)
+			fbi->var.activate & FB_ACTIVATE_FORCE)
 		return false;
 
 	oldvar.xoffset = newvar.xoffset = 0;
@@ -687,15 +689,15 @@ static int mxsfb_set_par(struct fb_info *fb_info)
 		case STMLCDIF_16BIT:
 			/* 24 bit to 18 bit mapping */
 			ctrl |= CTRL_DF24; /* ignore the upper 2 bits in
-					    *  each colour component
-					    */
+							*  each colour component
+							*/
 			break;
 		case STMLCDIF_18BIT:
 			if (pixfmt_is_equal(&fb_info->var, def_rgb666))
 				/* 24 bit to 18 bit mapping */
 				ctrl |= CTRL_DF24; /* ignore the upper 2 bits in
-						    *  each colour component
-						    */
+								*  each colour component
+								*/
 			break;
 		case STMLCDIF_24BIT:
 			/* real 24 bit */
@@ -855,7 +857,7 @@ static int mxsfb_ioctl(struct fb_info *fb_info, unsigned int cmd,
 			timestamp = ktime_to_ns(host->vsync_nf_timestamp);
 			if ((ret == 0) && copy_to_user((void *)arg,
 					&timestamp, sizeof(timestamp))) {
-			    ret = -EFAULT;
+					ret = -EFAULT;
 			}
 		}
 		break;
@@ -958,7 +960,7 @@ static int mxsfb_mmap(struct fb_info *info, struct vm_area_struct *vma)
 	vma->vm_page_prot = pgprot_writecombine(vma->vm_page_prot);
 
 	if (remap_pfn_range(vma, vma->vm_start, vma->vm_pgoff,
-			    vma->vm_end - vma->vm_start, vma->vm_page_prot)) {
+					vma->vm_end - vma->vm_start, vma->vm_page_prot)) {
 		dev_dbg(info->device, "mmap remap_pfn_range failed\n");
 		return -ENOBUFS;
 	}
@@ -1122,7 +1124,7 @@ static int mxsfb_init_fbinfo_dt(struct mxsfb_info *host)
 	}
 
 	ret = of_property_read_u32(display_np, "bits-per-pixel",
-				   &var->bits_per_pixel);
+					 &var->bits_per_pixel);
 	if (ret < 0) {
 		dev_err(dev, "failed to get property bits-per-pixel\n");
 		goto put_display_node;
@@ -1143,7 +1145,7 @@ static int mxsfb_init_fbinfo_dt(struct mxsfb_info *host)
 	}
 
 	timings_np = of_find_node_by_name(display_np,
-					  "display-timings");
+						"display-timings");
 	if (!timings_np) {
 		dev_err(dev, "failed to find display-timings node\n");
 		ret = -ENOENT;
@@ -1153,6 +1155,8 @@ static int mxsfb_init_fbinfo_dt(struct mxsfb_info *host)
 	for (i = 0; i < of_get_child_count(timings_np); i++) {
 		struct videomode vm;
 		struct fb_videomode fb_vm;
+		struct device_node *child;
+		int child_idx;
 
 		ret = videomode_from_timings(timings, &vm, i);
 		if (ret < 0)
@@ -1165,6 +1169,15 @@ static int mxsfb_init_fbinfo_dt(struct mxsfb_info *host)
 			fb_vm.sync |= FB_SYNC_OE_LOW_ACT;
 		if (vm.flags & DISPLAY_FLAGS_PIXDATA_NEGEDGE)
 			fb_vm.sync |= FB_SYNC_CLK_LAT_FALL;
+
+		child_idx = 0;
+		for_each_child_of_node(timings_np, child)
+			if(child_idx == i)
+				break;
+			else
+				child_idx++;
+		fb_vm.name = child->name;
+
 		fb_add_videomode(&fb_vm, &fb_info->modelist);
 	}
 
@@ -1179,8 +1192,9 @@ static int mxsfb_init_fbinfo(struct mxsfb_info *host)
 {
 	struct fb_info *fb_info = &host->fb_info;
 	struct fb_var_screeninfo *var = &fb_info->var;
-	struct fb_modelist *modelist;
+	struct fb_modelist *modelist, *modelist_entry;
 	int ret;
+	struct list_head *modelist_ptr;
 
 	fb_info->fbops = &mxsfb_ops;
 	fb_info->flags = FBINFO_FLAG_DEFAULT | FBINFO_READS_FAST;
@@ -1198,9 +1212,22 @@ static int mxsfb_init_fbinfo(struct mxsfb_info *host)
 	else
 		sprintf(fb_info->fix.id, "mxs-lcdif%d", host->id);
 
-	/* first video mode in the modelist as default video mode  */
-	modelist = list_first_entry(&fb_info->modelist,
-			struct fb_modelist, list);
+	/* Use first video mode in the modelist as default video mode if
+		 it's not explicitly defined in the kernel command line */
+	modelist = 0;
+	if(strlen(cmd_line_mode_name) > 0) {
+		list_for_each(modelist_ptr, &fb_info->modelist) {
+			modelist_entry = list_entry(modelist_ptr, struct fb_modelist, list);
+			if(!strncmp(modelist_entry->mode.name, cmd_line_mode_name, strlen(cmd_line_mode_name))) {
+				modelist = modelist_entry;
+				break;
+			}
+		}
+	}
+
+	if(!modelist) {
+		modelist = list_first_entry(&fb_info->modelist,	struct fb_modelist, list);
+	}
 	fb_videomode_to_var(var, &modelist->mode);
 
 	var->nonstd = 0;
@@ -1225,7 +1252,7 @@ static int mxsfb_init_fbinfo(struct mxsfb_info *host)
 }
 
 static void mxsfb_dispdrv_init(struct platform_device *pdev,
-			      struct fb_info *fbi)
+						struct fb_info *fbi)
 {
 	struct mxsfb_info *host = to_imxfb_host(fbi);
 	struct mxc_dispdrv_setting setting;
@@ -1268,7 +1295,7 @@ static int mxsfb_map_videomem(struct fb_info *fbi)
 {
 	if (fbi->fix.smem_len < fbi->var.yres_virtual * fbi->fix.line_length)
 		fbi->fix.smem_len = fbi->var.yres_virtual *
-				    fbi->fix.line_length;
+						fbi->fix.line_length;
 
 	fbi->screen_base = dma_alloc_writecombine(fbi->device,
 				fbi->fix.smem_len,
@@ -1302,12 +1329,33 @@ static int mxsfb_map_videomem(struct fb_info *fbi)
 static int mxsfb_unmap_videomem(struct fb_info *fbi)
 {
 	dma_free_writecombine(fbi->device, fbi->fix.smem_len,
-			      fbi->screen_base, fbi->fix.smem_start);
+						fbi->screen_base, fbi->fix.smem_start);
 	fbi->screen_base = 0;
 	fbi->fix.smem_start = 0;
 	fbi->fix.smem_len = 0;
 	return 0;
 }
+
+/**
+ *	vbase_setup - process command line options
+ *	@options: string of options
+ *
+ *	Process VBase related command line options for frame buffer subsystem.
+ *
+ *	NOTE: This function is a __setup and __init function.
+ *            It only stores the options.
+ *
+ */
+static int __init vbase_setup(char *options)
+{
+	printk(KERN_ERR "VBASE_VIDEO_OPTIONS: %s\n", options);
+
+	memset(cmd_line_mode_name, 0, sizeof(cmd_line_mode_name));
+	strncpy(cmd_line_mode_name, options, sizeof(cmd_line_mode_name) - 1);
+
+	return 1;
+}
+__setup("vbase_video=", vbase_setup);
 
 static struct platform_device_id mxsfb_devtype[] = {
 	{
@@ -1358,7 +1406,7 @@ static int mxsfb_probe(struct platform_device *pdev)
 	host = to_imxfb_host(fb_info);
 
 	ret = devm_request_irq(&pdev->dev, irq, mxsfb_irq_handler, 0,
-			  dev_name(&pdev->dev), host);
+				dev_name(&pdev->dev), host);
 	if (ret) {
 		dev_err(&pdev->dev, "request_irq (%d) failed with error %d\n",
 				irq, ret);
@@ -1409,7 +1457,7 @@ static int mxsfb_probe(struct platform_device *pdev)
 	}
 
 	fb_info->pseudo_palette = devm_kzalloc(&pdev->dev, sizeof(u32) * 16,
-					       GFP_KERNEL);
+								 GFP_KERNEL);
 	if (!fb_info->pseudo_palette) {
 		ret = -ENOMEM;
 		goto fb_release;
@@ -1588,9 +1636,9 @@ static struct platform_driver mxsfb_driver = {
 	.shutdown = mxsfb_shutdown,
 	.id_table = mxsfb_devtype,
 	.driver = {
-		   .name = DRIVER_NAME,
-		   .of_match_table = mxsfb_dt_ids,
-		   .pm = &mxsfb_pm_ops,
+			 .name = DRIVER_NAME,
+			 .of_match_table = mxsfb_dt_ids,
+			 .pm = &mxsfb_pm_ops,
 	},
 };
 

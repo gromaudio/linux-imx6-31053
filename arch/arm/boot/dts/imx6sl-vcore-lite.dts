@@ -227,8 +227,8 @@
 
 		display-timings {
 			native-mode = <&timing0>;
-/*
-      timing0: timing0 {
+
+      timing0: VGA_1024 {
         clock-frequency = <75000000>;
         hactive         = <1024>;
         vactive         = <768>;
@@ -243,26 +243,8 @@
         de-active       = <1>;
         pixelclk-active = <1>;
       };
-*/
 
-			timing0: timing0 {
-				clock-frequency = <40000000>;
-				hactive         = <1280>;
-				vactive         = <480>;
-				hback-porch     = <14>;
-				hfront-porch    = <37>;
-				vback-porch     = <10>;
-				vfront-porch    = <4>;
-				hsync-len       = <14>;
-				vsync-len       = <1>;
-				hsync-active    = <0>;
-				vsync-active    = <0>;
-				de-active       = <1>;
-				pixelclk-active = <0>;
-			};
-
-/*
-      timing1: timing1 {
+      timing1: LEXUS {
         clock-frequency = <33000000>;
         hactive         = <800>;
         vactive         = <480>;
@@ -277,7 +259,22 @@
         de-active       = <1>;
         pixelclk-active = <1>;
       };
-*/
+
+			timing2: BMW_1280 {
+				clock-frequency = <40000000>;
+				hactive         = <1280>;
+				vactive         = <480>;
+				hback-porch     = <14>;
+				hfront-porch    = <37>;
+				vback-porch     = <10>;
+				vfront-porch    = <4>;
+				hsync-len       = <14>;
+				vsync-len       = <1>;
+				hsync-active    = <0>;
+				vsync-active    = <0>;
+				de-active       = <1>;
+				pixelclk-active = <0>;
+			};
 		};
 	};
 };
